@@ -16,7 +16,7 @@ const LevelSlider = () => {
     <div className="grid gap-2 pt-2 w-full">
       <HoverCard openDelay={200}>
         <HoverCardTrigger asChild>
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             <div className="flex items-center justify-between">
               <Label>Level</Label>
               <span className="w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm text-muted-foreground hover:border-border">

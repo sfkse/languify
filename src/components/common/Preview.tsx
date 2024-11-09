@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Button } from "../ui/button";
-import { Minus, Plus, RotateCw } from "lucide-react";
 import { Document, Page } from "react-pdf";
+import PreviewToolbar from "@/components/common/PreviewToolbar";
 
 const Preview = ({
   url,
@@ -38,54 +37,15 @@ const Preview = ({
   return (
     <div className="w-full max-w-5xl">
       <div className="flex flex-col items-center gap-4 p-4 rounded-lg bg-muted">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => changePage(-1)}
-              disabled={pageNumber <= 1}
-            >
-              Previous
-            </Button>
-            <span className="text-sm">
-              Page {pageNumber} of {numPages}
-            </span>
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => changePage(1)}
-              disabled={pageNumber >= (numPages || 1)}
-            >
-              Next
-            </Button>
-          </div>
-
-          <div className="flex items-center gap-2 ml-4">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={zoomOut}
-              disabled={scale <= 0.5}
-            >
-              <Minus className="h-4 w-4" />
-            </Button>
-            <span className="text-sm w-20 text-center">
-              {Math.round(scale * 100)}%
-            </span>
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={zoomIn}
-              disabled={scale >= 3}
-            >
-              <Plus className="h-4 w-4" />
-            </Button>
-            <Button variant="outline" size="icon" onClick={rotate}>
-              <RotateCw className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
+        <PreviewToolbar
+          pageNumber={pageNumber}
+          numPages={numPages}
+          changePage={changePage}
+          scale={scale}
+          zoomIn={zoomIn}
+          zoomOut={zoomOut}
+          rotate={rotate}
+        />
 
         <div className="w-full overflow-auto">
           <Document

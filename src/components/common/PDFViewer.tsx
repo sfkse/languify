@@ -3,8 +3,8 @@ import { ChangeEvent, useState } from "react";
 import { pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import FileUpload from "./FileUpload";
 import Preview from "./Preview";
+import Drawer from "./Drawer";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -70,20 +70,22 @@ export function PDFViewer() {
 
   return (
     <>
-      {!url && <FileUpload handleChange={handleChange} />}
+      {/* {!url && <FileUpload handleChange={handleChange} />} */}
 
-      {url && (
-        <>
+      {/* {url && ( */}
+      <div className="flex flex-col w-full gap-4">
+        <div className="w-full flex flex-row justify-center gap-4 max-w-5xl">
           <Preview
-            url={url}
+            url={url || ""}
             pageNumber={pageNumber}
             numPages={numPages || 0}
             changePage={changePage}
             setNumPages={setNumPages}
           />
-          {/* <Drawer /> */}
-        </>
-      )}
+          <Drawer />
+        </div>
+      </div>
+      {/* )} */}
     </>
   );
 }

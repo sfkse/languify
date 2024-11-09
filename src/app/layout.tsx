@@ -38,7 +38,7 @@ export default function RootLayout({
               <SidebarTrigger />
               <Topbar />
             </div>
-            <div className="flex flex-col items-center justify-center w-full min-h-[calc(100vh-3rem)] p-8 gap-4">
+            <div className="flex flex-col w-full min-h-[calc(100vh-3rem)] p-8 gap-4">
               {children}
             </div>
           </main>

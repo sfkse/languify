@@ -36,7 +36,9 @@ export function AppSidebar() {
   ];
   return (
     <Sidebar>
-      <SidebarHeader />
+      <SidebarHeader>
+        <span className="text-xl font-bold">Languify</span>
+      </SidebarHeader>
       <SidebarGroup>
         <SidebarGroupLabel>Application</SidebarGroupLabel>
         <SidebarGroupContent>

@@ -7,34 +7,14 @@ import {
   SheetTitle,
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Eye, MoreHorizontal } from "lucide-react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import {
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { Eye } from "lucide-react";
+import DataTable from "./DataTable";
 
 const Drawer = () => {
-  const trimText = (text: string) => {
-    const TRIM_LENGTH = 50;
-    return text.length > TRIM_LENGTH
-      ? text.substring(0, TRIM_LENGTH) + "..."
-      : text;
-  };
-
   return (
     <div className="sticky top-16 right-0">
       <Sheet>
-        <SheetTrigger>
+        <SheetTrigger asChild>
           <Button variant="outline" size="icon">
             <Eye className="w-4 h-4" />
           </Button>
@@ -43,38 +23,7 @@ const Drawer = () => {
           <SheetHeader>
             <SheetTitle>PDF Title</SheetTitle>
             <SheetDescription>
-              <Table className="mt-10">
-                <TableHeader>
-                  <TableRow>
-                    <TableHead className="w-3/4">Text</TableHead>
-                    <TableHead className="w-1/4">Page</TableHead>
-                    <TableHead className="text-right"></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow className="hover:bg-gray-100 cursor-pointer">
-                    <TableCell className="font-medium">
-                      {trimText(
-                        "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-                      )}
-                    </TableCell>
-                    <TableCell>1</TableCell>
-                    <TableCell className="text-right">
-                      <DropdownMenu>
-                        <DropdownMenuTrigger>
-                          <MoreHorizontal className="w-4 h-4" />
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="-translate-x-2">
-                          <DropdownMenuItem>Edit</DropdownMenuItem>
-                          <DropdownMenuItem className="text-red-500">
-                            Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
+              <DataTable />
             </SheetDescription>
           </SheetHeader>
         </SheetContent>

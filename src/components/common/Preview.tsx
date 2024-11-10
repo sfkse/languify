@@ -2,24 +2,21 @@ import { useState } from "react";
 import { Document, Page } from "react-pdf";
 import PreviewToolbar from "@/components/common/PreviewToolbar";
 
-const Preview = ({
-  url,
-  pageNumber,
-  numPages,
-  changePage,
-  setNumPages,
-}: {
-  url: string;
-  pageNumber: number;
-  numPages: number;
-  changePage: (page: number) => void;
-  setNumPages: (numPages: number) => void;
-}) => {
+const Preview = ({ url }: { url: string }) => {
+  const [pageNumber, setPageNumber] = useState(1);
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
+  const [numPages, setNumPages] = useState(0);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
+  };
+
+  const changePage = (offset: number) => {
+    setPageNumber((prevPageNumber) => {
+      const newPageNumber = prevPageNumber + offset;
+      return Math.min(Math.max(1, newPageNumber), numPages || 1);
+    });
   };
 
   const rotate = () => {

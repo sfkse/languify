@@ -1,16 +1,19 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { Button } from "../ui/button";
 import { Upload } from "lucide-react";
 
 const Topbar = () => {
+  const router = useRouter();
+
   const handleUploadClick = () => {
     console.log("upload clicked");
-
-    const fileInput = document.getElementById("pdf-upload");
-    if (fileInput) {
-      fileInput.click();
-    }
+    router.push("/");
+    // const fileInput = document.getElementById("pdf-upload");
+    // if (fileInput) {
+    //   fileInput.click();
+    // }
   };
 
   return (

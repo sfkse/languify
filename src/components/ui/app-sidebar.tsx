@@ -1,3 +1,4 @@
+import Link from "next/link";
 import {
   Sidebar,
   SidebarFooter,
@@ -17,20 +18,21 @@ import {
 import { ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { VersionSwitcher } from "@/components/ui/version-switcher";
+
 export function AppSidebar() {
   // Menu items.
   const items = [
     {
       title: "Home",
-      url: "#",
+      url: "/",
     },
     {
       title: "Documents",
-      url: "#",
+      url: "/documents",
     },
     {
       title: "Settings",
-      url: "#",
+      url: "/settings",
     },
   ];
   return (
@@ -41,16 +43,16 @@ export function AppSidebar() {
           defaultVersion={"1.0.0"}
         />
       </SidebarHeader>
-      <SidebarGroup>
+      <SidebarGroup className="mt-10">
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (
               <SidebarMenuItem key={item.title}>
                 <SidebarMenuButton asChild>
-                  <a href={item.url}>
+                  <Link href={item.url}>
                     {/* <item.icon /> */}
                     <span>{item.title}</span>
-                  </a>
+                  </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             ))}

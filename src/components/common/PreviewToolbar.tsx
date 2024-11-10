@@ -85,8 +85,10 @@ const PreviewToolbar = ({
         </Button>
       </div>
       <Dialog>
-        <DialogTrigger>
-          <Settings className="h-4 w-4" /> Settings
+        <DialogTrigger asChild>
+          <Button>
+            <Settings className="h-4 w-full" /> Settings
+          </Button>
         </DialogTrigger>
         <DialogContent>
           <DialogHeader>

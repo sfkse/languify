@@ -3,7 +3,6 @@ import {
   SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -17,7 +16,7 @@ import {
 } from "./dropdown-menu";
 import { ChevronUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
+import { VersionSwitcher } from "@/components/ui/version-switcher";
 export function AppSidebar() {
   // Menu items.
   const items = [
@@ -37,10 +36,12 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <span className="text-xl font-bold">Languify</span>
+        <VersionSwitcher
+          versions={["1.0.0", "1.0.1", "1.0.2"]}
+          defaultVersion={"1.0.0"}
+        />
       </SidebarHeader>
       <SidebarGroup>
-        <SidebarGroupLabel>Application</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
             {items.map((item) => (
@@ -56,12 +57,12 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>
-      <SidebarFooter>
+      <SidebarFooter className="mt-auto pb-4">
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
+                <SidebarMenuButton size="lg">
                   <Avatar>
                     <AvatarImage src="https://github.com/shadcn.png" />
                     <AvatarFallback>CN</AvatarFallback>

@@ -1,10 +1,12 @@
 "use client";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 import { pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 import Preview from "./Preview";
 import Drawer from "./Drawer";
+import { toast } from "@/hooks/use-toast";
+import FileUpload from "./FileUpload";
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -12,16 +14,13 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 export function PDFViewer() {
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [numPages, setNumPages] = useState<number | null>(null);
   const [pageNumber, setPageNumber] = useState(1);
   const [url, setUrl] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+  const handleFileChange = async (file: File) => {
     if (file && file.type === "application/pdf") {
-      setSelectedFile(file);
       setUrl(URL.createObjectURL(file));
       setPageNumber(1);
       await handleUpload(file);
@@ -32,25 +31,32 @@ export function PDFViewer() {
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
+    formData.append("upload_preset", "ml_default");
     try {
-      //   const response = await fetch("/api/upload", {
-      //     method: "POST",
-      //     body: formData,
-      //   });
-      //   const data = await response.json();
-      //   if (!response.ok) {
-      //     throw new Error(data.error || "Upload failed");
-      //   }
-      //   toast({
-      //     title: "Upload successful",
-      //     description: `File "${file.name}" has been uploaded.`,
-      //   });
+      const response = await fetch(
+        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
+
+      const data = await response.json();
+      console.log(data);
+      if (!response.ok) {
+        throw new Error(data.error || "Upload failed");
+      }
+      toast({
+        title: "Upload successful",
+        description: `File "${file.name}" has been uploaded.`,
+      });
     } catch (error) {
-      //   toast({
-      //     title: "Upload failed",
-      //     description: error instanceof Error ? error.message : "Something went wrong",
-      //     variant: "destructive",
-      //   });
+      toast({
+        title: "Upload failed",
+        description:
+          error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
+      });
     } finally {
       setIsUploading(false);
     }
@@ -63,29 +69,26 @@ export function PDFViewer() {
     });
   };
 
-  const handleChange = (file: File) => {
-    setSelectedFile(file);
-    setUrl(URL.createObjectURL(file));
-  };
-
   return (
     <>
-      {/* {!url && <FileUpload handleChange={handleChange} />} */}
+      {!url && (
+        <FileUpload onFileChange={handleFileChange} isUploading={isUploading} />
+      )}
 
-      {/* {url && ( */}
-      <div className="flex flex-col w-full gap-4">
-        <div className="w-full flex flex-row justify-center gap-4 max-w-5xl">
-          <Preview
-            url={url || ""}
-            pageNumber={pageNumber}
-            numPages={numPages || 0}
-            changePage={changePage}
-            setNumPages={setNumPages}
-          />
-          <Drawer />
+      {url && (
+        <div className="flex flex-col w-full gap-4">
+          <div className="w-full flex flex-row justify-center gap-4 max-w-5xl">
+            <Preview
+              url={url || ""}
+              pageNumber={pageNumber}
+              numPages={numPages || 0}
+              changePage={changePage}
+              setNumPages={setNumPages}
+            />
+            <Drawer />
+          </div>
         </div>
-      </div>
-      {/* )} */}
+      )}
     </>
   );
 }

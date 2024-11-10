@@ -11,6 +11,16 @@ import { Eye } from "lucide-react";
 import DataTable from "./DataTable";
 
 const Drawer = () => {
+  const columns = [
+    { key: "text", header: "Text", width: "3/4" },
+    { key: "page", header: "Page", width: "1/4" },
+  ];
+
+  const data = [
+    { id: "1", text: "Sample text", page: 1 },
+    { id: "2", text: "Another text", page: 2 },
+  ];
+
   return (
     <div className="sticky top-16 right-0">
       <Sheet>
@@ -23,7 +33,12 @@ const Drawer = () => {
           <SheetHeader>
             <SheetTitle>PDF Title</SheetTitle>
             <SheetDescription>
-              <DataTable />
+              <DataTable
+                columns={columns}
+                data={data}
+                onEdit={(id) => console.log("Edit", id)}
+                onDelete={(id) => console.log("Delete", id)}
+              />
             </SheetDescription>
           </SheetHeader>
         </SheetContent>

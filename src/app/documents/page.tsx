@@ -4,6 +4,16 @@ import PageContentWrapper from "@/components/common/PageContentWrapper";
 import { Input } from "@/components/ui/input";
 
 const DocumentsPage = () => {
+  const columns = [
+    { key: "text", header: "Text", width: "3/4" },
+    { key: "page", header: "Page", width: "1/4" },
+  ];
+
+  const data = [
+    { id: "1", text: "Sample text", page: 1 },
+    { id: "2", text: "Another text", page: 2 },
+  ];
+
   return (
     <>
       <Breadcrumbs />
@@ -12,7 +22,12 @@ const DocumentsPage = () => {
           <Input placeholder="Search" />
         </div>
         <div className="rounded-md border mt-5 max-w-5xl">
-          <DataTable />
+          <DataTable
+            columns={columns}
+            data={data}
+            onEdit={(id) => console.log("Edit", id)}
+            onDelete={(id) => console.log("Delete", id)}
+          />
         </div>
       </PageContentWrapper>
     </>

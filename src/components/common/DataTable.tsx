@@ -14,42 +14,88 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
 
-const DataTable = () => {
+interface Column {
+  key: string;
+  header: string;
+  width?: string;
+}
+
+interface TableItem {
+  [key: string]: string | number;
+  id: string;
+}
+
+interface DataTableProps {
+  columns: Column[];
+  data: TableItem[];
+  onEdit?: (id: string) => void;
+  onDelete?: (id: string) => void;
+  maxTextLength?: number;
+}
+
+const DataTable = ({
+  columns,
+  data,
+  onEdit,
+  onDelete,
+  maxTextLength = 100,
+}: DataTableProps) => {
   const trimText = (text: string) => {
-    return text.length > 100 ? text.substring(0, 100) + "..." : text;
+    return typeof text === "string" && text.length > maxTextLength
+      ? text.substring(0, maxTextLength) + "..."
+      : text;
   };
 
   return (
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead className="w-3/4">Text</TableHead>
-          <TableHead className="w-1/4">Page</TableHead>
+          {columns.map((column) => (
+            <TableHead
+              key={column.key}
+              className={column.width ? `w-${column.width}` : undefined}
+            >
+              {column.header}
+            </TableHead>
+          ))}
           <TableHead className="text-right"></TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
-        <TableRow className="hover:bg-gray-100 cursor-pointer">
-          <TableCell className="font-medium">
-            {trimText(
-              "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam, quos."
-            )}
-          </TableCell>
-          <TableCell>1</TableCell>
-          <TableCell className="text-right">
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <MoreHorizontal className="w-4 h-4" />
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className="-translate-x-2">
-                <DropdownMenuItem>Edit</DropdownMenuItem>
-                <DropdownMenuItem className="text-red-500">
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </TableCell>
-        </TableRow>
+        {data.map((item) => (
+          <TableRow key={item.id} className="hover:bg-gray-100 cursor-pointer">
+            {columns.map((column) => (
+              <TableCell
+                key={`${item.id}-${column.key}`}
+                className="font-medium"
+              >
+                {trimText(item[column.key] as string)}
+              </TableCell>
+            ))}
+            <TableCell className="text-right">
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <MoreHorizontal className="w-4 h-4" />
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="-translate-x-2">
+                  {onEdit && (
+                    <DropdownMenuItem onClick={() => onEdit(item.id)}>
+                      Edit
+                    </DropdownMenuItem>
+                  )}
+                  {onDelete && (
+                    <DropdownMenuItem
+                      onClick={() => onDelete(item.id)}
+                      className="text-red-500"
+                    >
+                      Delete
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </TableCell>
+          </TableRow>
+        ))}
       </TableBody>
     </Table>
   );

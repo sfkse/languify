@@ -28,6 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
+      {/* <UserSyncProvider> */}
       <html lang="en">
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -36,6 +37,7 @@ export default function RootLayout({
           <Toaster />
         </body>
       </html>
+      {/* </UserSyncProvider> */}
     </ClerkProvider>
   );
 }

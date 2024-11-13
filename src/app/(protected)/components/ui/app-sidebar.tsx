@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link";
 import {
   Sidebar,
@@ -9,21 +10,11 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/app/(protected)/components/ui/sidebar";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "./dropdown-menu";
-import { ChevronUp } from "lucide-react";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/app/(protected)/components/ui/avatar";
 import { VersionSwitcher } from "@/app/(protected)/components/ui/version-switcher";
+import { useClerk } from "@clerk/nextjs";
 
 export function AppSidebar() {
+  const { signOut } = useClerk();
   // Menu items.
   const items = [
     {
@@ -42,10 +33,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader>
-        <VersionSwitcher
-          versions={["1.0.0", "1.0.1", "1.0.2"]}
-          defaultVersion={"1.0.0"}
-        />
+        <VersionSwitcher title="Languify" type="logo" />
       </SidebarHeader>
       <SidebarGroup className="mt-10">
         <SidebarGroupContent>
@@ -64,7 +52,7 @@ export function AppSidebar() {
         </SidebarGroupContent>
       </SidebarGroup>
       <SidebarFooter className="mt-auto pb-4">
-        <SidebarMenu>
+        {/* <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -92,7 +80,22 @@ export function AppSidebar() {
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>
-        </SidebarMenu>
+        </SidebarMenu> */}
+        <VersionSwitcher
+          title="Sefa Köse"
+          subtitle="sfkse5591@gmail.com"
+          type="menu"
+          menuItems={[
+            {
+              title: "Profile",
+              onClick: () => console.log("Profile"),
+            },
+            {
+              title: "Sign out",
+              onClick: () => signOut(),
+            },
+          ]}
+        />
       </SidebarFooter>
     </Sidebar>
   );

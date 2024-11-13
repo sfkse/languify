@@ -1,5 +1,4 @@
 "use client";
-
 import FileUpload from "@/app/(protected)/components/common/FileUpload";
 import PageContentWrapper from "@/app/(protected)/components/common/PageContentWrapper";
 import useUploadFile from "@/app/(protected)/hooks/useUploadFile";

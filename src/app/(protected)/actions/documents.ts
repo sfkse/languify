@@ -1,5 +1,6 @@
 "use server";
 
+import { NextResponse } from "next/server";
 import { prisma } from "../lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 export async function createDocument(
@@ -26,10 +27,13 @@ export async function getDocument(id: string) {
         id,
       },
     });
-    return document;
+    return NextResponse.json(document);
   } catch (error) {
     console.error(error);
-    return null;
+    return NextResponse.json(
+      { error: "Failed to fetch document" },
+      { status: 500 }
+    );
   }
 }
 

@@ -1,24 +1,15 @@
-"use client";
-import { pdfjs } from "react-pdf";
-import "react-pdf/dist/esm/Page/AnnotationLayer.css";
-import "react-pdf/dist/esm/Page/TextLayer.css";
 import Preview from "./Preview";
 import Drawer from "./Drawer";
+import { getDocument } from "../../actions/documents";
 
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  "pdfjs-dist/build/pdf.worker.min.mjs",
-  import.meta.url
-).toString();
+export async function PDFViewer({ id }: { id: string }) {
+  const document = await getDocument(id);
+  console.log(document);
 
-export function PDFViewer() {
   return (
     <div className="flex flex-col w-full gap-4">
       <div className="w-full flex flex-row justify-center gap-4 max-w-5xl">
-        <Preview
-          url={
-            "https://res.cloudinary.com/dtjur0aru/image/upload/v1731239887/Cheat-Sheet-Networks-Requests_tby06r.pdf"
-          }
-        />
+        <Preview url={document?.[0].url || ""} />
         <Drawer />
       </div>
     </div>

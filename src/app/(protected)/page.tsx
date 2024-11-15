@@ -2,6 +2,7 @@
 import FileUpload from "@/app/(protected)/components/common/FileUpload";
 import PageContentWrapper from "@/app/(protected)/components/common/PageContentWrapper";
 import useUploadFile from "@/app/(protected)/hooks/useUploadFile";
+import Loading from "@/app/(protected)/loading";
 
 export default function Home() {
   const { isUploading, uploadFile } = useUploadFile();
@@ -12,7 +13,7 @@ export default function Home() {
 
   return (
     <PageContentWrapper>
-      {isUploading && <div>Uploading...</div>}
+      {isUploading && <Loading />}
       <FileUpload onFileChange={handleFileChange} isUploading={isUploading} />
     </PageContentWrapper>
   );

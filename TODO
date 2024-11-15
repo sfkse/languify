@@ -1,1 +1,2 @@
 - Fix webhook endpoint
+- Fetch auth user and send in the create document endpoint

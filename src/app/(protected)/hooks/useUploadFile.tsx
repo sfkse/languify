@@ -33,7 +33,8 @@ const useUploadFile = () => {
       // Save document to database
       const savedDocument = await createDocument(
         file.name,
-        cloudinaryData.secure_url
+        cloudinaryData.secure_url,
+        "eb6c4b92-2f1f-4e60-8b02-40b4037d7f64"
       );
 
       if (!savedDocument) {

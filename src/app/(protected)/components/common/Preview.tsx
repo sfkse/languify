@@ -3,8 +3,6 @@ import { useState, useEffect } from "react";
 import { Document, Page, pdfjs } from "react-pdf";
 
 import PreviewToolbar from "@/app/(protected)/components/common/PreviewToolbar";
-import CustomPopover from "@/app/(protected)/components/common/CustomPopover";
-import { Button } from "../ui/button";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
 
@@ -15,24 +13,28 @@ import "react-pdf/dist/esm/Page/TextLayer.css";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 
-const Preview = ({ url }: { url: string }) => {
-  const [pageNumber, setPageNumber] = useState(1);
+const Preview = ({
+  url,
+  onTextSelect,
+  onPageChange,
+  page,
+}: {
+  url: string;
+  onTextSelect: (text: string) => void;
+  onPageChange: (page: number) => void;
+  page: number;
+}) => {
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
   const [numPages, setNumPages] = useState(0);
-  const [selectedText, setSelectedText] = useState("");
-  const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-  const [popupVisible, setPopupVisible] = useState(false);
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
   };
 
   const changePage = (offset: number) => {
-    setPageNumber((prevPageNumber) => {
-      const newPageNumber = prevPageNumber + offset;
-      return Math.min(Math.max(1, newPageNumber), numPages || 1);
-    });
+    const newPageNumber = page + offset;
+    onPageChange(Math.min(Math.max(1, newPageNumber), numPages || 1));
   };
 
   const rotate = () => {
@@ -47,23 +49,20 @@ const Preview = ({ url }: { url: string }) => {
     setScale((prevScale) => Math.max(prevScale - 0.1, 0.5));
   };
 
-  const handleTextSelection = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleTextSelection = () => {
     const selection = window.getSelection();
     const text = selection?.toString();
-    console.log(text);
-    if (text) {
-      const { clientX, clientY } = e;
-      setSelectedText(text);
-      setPopupPosition({ x: clientX, y: clientY });
-      setPopupVisible(true);
-    } else {
-      setPopupVisible(false);
+    if (text && text.trim() !== "") {
+      onTextSelect(text);
     }
   };
 
   useEffect(() => {
     const handleClickOutside = () => {
-      setPopupVisible(false);
+      const selection = window.getSelection();
+      if (selection) {
+        selection.removeAllRanges();
+      }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
@@ -72,16 +71,11 @@ const Preview = ({ url }: { url: string }) => {
     };
   }, []);
 
-  const handleAddToGlossary = () => {
-    console.log("Add to glossary");
-    setPopupVisible(false);
-  };
-
   return (
     <div className="w-full max-w-5xl">
       <div className="flex flex-col items-center gap-4 p-4 rounded-lg bg-muted">
         <PreviewToolbar
-          pageNumber={pageNumber}
+          pageNumber={page}
           numPages={numPages}
           changePage={changePage}
           scale={scale}
@@ -98,7 +92,7 @@ const Preview = ({ url }: { url: string }) => {
             onMouseUp={handleTextSelection}
           >
             <Page
-              pageNumber={pageNumber}
+              pageNumber={page}
               renderTextLayer={true}
               renderAnnotationLayer={true}
               className="border rounded-lg shadow-lg"
@@ -106,20 +100,6 @@ const Preview = ({ url }: { url: string }) => {
               rotate={rotation}
             />
           </Document>
-
-          {popupVisible && (
-            <CustomPopover
-              isVisible={popupVisible}
-              x={popupPosition.x}
-              y={popupPosition.y}
-            >
-              <div className="flex flex-col gap-2">
-                <p className="text-sm font-medium">Selected text:</p>
-                <p className="text-sm text-muted-foreground">{selectedText}</p>
-                <Button onClick={handleAddToGlossary}>Add to glossary</Button>
-              </div>
-            </CustomPopover>
-          )}
         </div>
       </div>
     </div>

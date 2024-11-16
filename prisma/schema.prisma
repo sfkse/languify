@@ -11,12 +11,13 @@ datasource db {
 }
 
 model Document {
-  id        String   @id @default(cuid())
+  id        String     @id @default(cuid())
   title     String
   url       String
   userId    String
-  user      User     @relation(fields: [userId], references: [id])
-  createdAt DateTime @default(now())
+  user      User       @relation(fields: [userId], references: [id])
+  glossary  Glossary[]
+  createdAt DateTime   @default(now())
 }
 
 model User {
@@ -27,4 +28,13 @@ model User {
   documents Document[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+}
+
+model Glossary {
+  id         String   @id @default(cuid())
+  text       String
+  page       Int
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+  createdAt  DateTime @default(now())
 }

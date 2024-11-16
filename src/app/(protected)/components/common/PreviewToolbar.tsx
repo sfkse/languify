@@ -10,14 +10,7 @@ import {
 } from "@/app/(protected)/components/ui/dialog";
 import { Minus, Plus } from "lucide-react";
 import { Dialog } from "@/app/(protected)/components/ui/dialog";
-import LevelSlider from "./LevelSlider";
-import {
-  Select,
-  SelectValue,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/app/(protected)/components/ui/select";
+import SettingsOptions from "./SettingsOptions";
 
 const PreviewToolbar = ({
   pageNumber,
@@ -94,34 +87,7 @@ const PreviewToolbar = ({
           <DialogHeader>
             <DialogTitle>Settings</DialogTitle>
             <DialogDescription>
-              <LevelSlider />
-              <div className="flex flex-row justify-between items-center gap-10 mt-10">
-                <span className="w-40">Source language</span>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="flex flex-row justify-between items-center gap-10 mt-5">
-                <span className="w-40">Target language </span>
-                <Select>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select a language" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="en">English</SelectItem>
-                    <SelectItem value="fr">French</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <Button variant="default" className="w-full mt-10">
-                Save
-              </Button>
+              <SettingsOptions />
             </DialogDescription>
           </DialogHeader>
         </DialogContent>

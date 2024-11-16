@@ -3,7 +3,7 @@ import Preview from "./Preview";
 import Drawer from "./Drawer";
 import TextPanel from "./TextPanel";
 import { getDocument } from "../../actions/documents";
-import Error from "@/app/(protected)/documents/[id]/error";
+import Error from "@/app/(protected)/(pages)/documents/[id]/error";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Document } from "@prisma/client";
@@ -63,6 +63,7 @@ export function PDFViewer({ id }: { id: string }) {
           />
           <TextPanel
             selectedText={selectedText}
+            setSelectedText={setSelectedText}
             documentId={document.id}
             page={page}
             setIsPanelOpen={setIsPanelOpen}

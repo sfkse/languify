@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "../ui/button";
-import { PanelRight, Wand2 } from "lucide-react";
+import { Highlighter, PanelRight, Wand2 } from "lucide-react";
 import { cn } from "@/app/(protected)/lib/utils";
 import { createGlossary, rephraseText } from "../../actions/glossary";
 import { toast } from "../../hooks/use-toast";
@@ -8,12 +8,14 @@ import { useState } from "react";
 
 const TextPanel = ({
   selectedText,
+  setSelectedText,
   isPanelOpen,
   setIsPanelOpen,
   documentId,
   page,
 }: {
   selectedText: string;
+  setSelectedText: (text: string) => void;
   isPanelOpen: boolean;
   setIsPanelOpen: (open: boolean) => void;
   documentId: string;
@@ -65,6 +67,7 @@ const TextPanel = ({
         onClick={() => {
           setIsPanelOpen(!isPanelOpen);
           setRephrasedText("");
+          setSelectedText("");
         }}
         className="z-40"
       >
@@ -77,33 +80,52 @@ const TextPanel = ({
           isPanelOpen ? "translate-x-0 right-0" : "translate-x-full"
         )}
       >
-        <div className="flex flex-col gap-4">
-          <h2 className="text-lg font-semibold">Selected Text</h2>
-          <p className="text-sm text-muted-foreground">{selectedText}</p>
-          {rephrasedText && (
-            <p className="text-sm text-muted-foreground">
-              <br />
-              {rephrasedText}
+        <div className="flex flex-col gap-3 h-full">
+          {selectedText ? (
+            <>
+              <h2 className="text-lg font-semibold">Rephrase Text</h2>
+              <p className="text-sm text-muted-foreground underline">
+                Original Text
+              </p>
+              <p className="text-sm text-muted-foreground">{selectedText}</p>
+              {rephrasedText && (
+                <>
+                  <p className="text-sm text-muted-foreground">
+                    Rephrased Text
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    <br />
+                    {rephrasedText}
+                  </p>
+                </>
+              )}
+              <div className="flex gap-2 w-full mt-auto pb-4">
+                <Button
+                  variant="outline"
+                  className="w-full"
+                  onClick={handleRephrase}
+                  disabled={!selectedText || isLoading || isRephrasing}
+                >
+                  <Wand2 />
+                  {isRephrasing ? "Rephrasing..." : "Rephrase"}
+                </Button>
+                <Button
+                  className="w-full"
+                  onClick={handleAddToGlossary}
+                  disabled={!selectedText || isLoading}
+                >
+                  {isLoading ? "Adding..." : "Add to glossary"}
+                </Button>
+              </div>
+            </>
+          ) : (
+            <p className="text-sm text-muted-foreground text-center h-full flex flex-col items-center justify-center">
+              <Highlighter className="w-10 h-10" />
+              <span className="mt-2">
+                Let's rephrase some text. Highlight some text to get started.
+              </span>
             </p>
           )}
-          <div className="flex gap-2 w-full">
-            <Button
-              variant="outline"
-              className="w-full"
-              onClick={handleRephrase}
-              disabled={!selectedText || isLoading || isRephrasing}
-            >
-              <Wand2 />
-              {isRephrasing ? "Rephrasing..." : "Rephrase"}
-            </Button>
-            <Button
-              className="w-full"
-              onClick={handleAddToGlossary}
-              disabled={!selectedText || isLoading}
-            >
-              {isLoading ? "Adding..." : "Add to glossary"}
-            </Button>
-          </div>
         </div>
       </div>
     </>

@@ -3,17 +3,22 @@ import Breadcrumbs from "@/app/(protected)/components/common/Breadcrumbs";
 import DataTable from "@/app/(protected)/components/common/DataTable";
 import PageContentWrapper from "@/app/(protected)/components/common/PageContentWrapper";
 import { Input } from "@/app/(protected)/components/ui/input";
-import { getDocuments } from "../actions/documents";
+import { getDocuments } from "../../actions/documents";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Document } from "@prisma/client";
-import Loading from "../loading";
+import Loading from "../../loading";
 import { useRouter } from "next/navigation";
-import { toast } from "../hooks/use-toast";
+import { toast } from "../../hooks/use-toast";
 
 const columns = [
   { key: "title", header: "Title", width: "3/4" },
   { key: "createdAt", header: "Created At", width: "1/4" },
+];
+
+const breadcrumbs = [
+  { label: "Home", href: "/", isActive: false },
+  { label: "Documents", href: "/documents", isActive: true },
 ];
 
 const DocumentsPage = () => {
@@ -43,7 +48,7 @@ const DocumentsPage = () => {
 
   return (
     <>
-      <Breadcrumbs />
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
       <PageContentWrapper>
         <div className="flex flex-row justify-start w-80">
           <Input placeholder="Search" />

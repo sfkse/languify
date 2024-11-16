@@ -7,21 +7,30 @@ import {
   BreadcrumbSeparator,
 } from "@/app/(protected)/components/ui/breadcrumb";
 
-const Breadcrumbs = () => {
+type BreadcrumbItem = {
+  label: string;
+  href: string;
+  isActive: boolean;
+};
+
+const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItem[] }) => {
   return (
     <Breadcrumb>
       <BreadcrumbList>
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/">Home</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbLink href="/components">Components</BreadcrumbLink>
-        </BreadcrumbItem>
-        <BreadcrumbSeparator />
-        <BreadcrumbItem>
-          <BreadcrumbPage>Breadcrumb</BreadcrumbPage>
-        </BreadcrumbItem>
+        {breadcrumbs.map((breadcrumb) => (
+          <BreadcrumbItem key={breadcrumb.href}>
+            {!breadcrumb.isActive ? (
+              <>
+                <BreadcrumbLink href={breadcrumb.href}>
+                  {breadcrumb.label}
+                </BreadcrumbLink>
+                <BreadcrumbSeparator />
+              </>
+            ) : (
+              <BreadcrumbPage>{breadcrumb.label}</BreadcrumbPage>
+            )}
+          </BreadcrumbItem>
+        ))}
       </BreadcrumbList>
     </Breadcrumb>
   );

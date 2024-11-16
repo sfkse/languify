@@ -3,5 +3,6 @@ export interface Document {
   title: string;
   url: string;
   userId: string;
+  createdAt: Date;
 }
 

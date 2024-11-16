@@ -1,3 +1,4 @@
+"use client";
 import {
   Table,
   TableHeader,
@@ -21,13 +22,14 @@ interface Column {
 }
 
 interface TableItem {
-  [key: string]: string | number;
+  [key: string]: string | number | Date;
   id: string;
 }
 
 interface DataTableProps {
   columns: Column[];
   data: TableItem[];
+  onSelect?: (id: string) => void;
   onEdit?: (id: string) => void;
   onDelete?: (id: string) => void;
   maxTextLength?: number;
@@ -36,6 +38,7 @@ interface DataTableProps {
 const DataTable = ({
   columns,
   data,
+  onSelect,
   onEdit,
   onDelete,
   maxTextLength = 100,
@@ -63,7 +66,11 @@ const DataTable = ({
       </TableHeader>
       <TableBody>
         {data.map((item) => (
-          <TableRow key={item.id} className="hover:bg-gray-100 cursor-pointer">
+          <TableRow
+            key={item.id}
+            className="hover:bg-gray-100 cursor-pointer"
+            onClick={() => onSelect && onSelect(item.id)}
+          >
             {columns.map((column) => (
               <TableCell
                 key={`${item.id}-${column.key}`}

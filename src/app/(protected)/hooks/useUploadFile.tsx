@@ -4,12 +4,22 @@ import { useState } from "react";
 import { toast } from "@/app/(protected)/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createDocument } from "@/app/(protected)/actions/documents";
+import { uploadCloudinary } from "../actions/cloudinary";
 
 const useUploadFile = () => {
   const [isUploading, setIsUploading] = useState(false);
   const router = useRouter();
 
   const uploadFile = async (file: File) => {
+    if (file.size > 10000000) {
+      toast({
+        title: "File too large",
+        description: "Maximum file size is 10MB",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsUploading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -17,18 +27,7 @@ const useUploadFile = () => {
 
     try {
       // Upload to Cloudinary
-      const cloudinaryResponse = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/auto/upload`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
-
-      const cloudinaryData = await cloudinaryResponse.json();
-      if (!cloudinaryResponse.ok) {
-        throw new Error(cloudinaryData.error || "Upload failed");
-      }
+      const cloudinaryData = await uploadCloudinary(formData);
 
       // Save document to database
       const savedDocument = await createDocument(
@@ -36,10 +35,6 @@ const useUploadFile = () => {
         cloudinaryData.secure_url,
         "eb6c4b92-2f1f-4e60-8b02-40b4037d7f64"
       );
-
-      if (!savedDocument) {
-        throw new Error("Failed to save document");
-      }
 
       toast({
         title: "Upload successful",
@@ -49,6 +44,7 @@ const useUploadFile = () => {
       // Navigate to the document page
       router.push(`/documents/${savedDocument.id}`);
     } catch (error) {
+      console.log("upload error", error);
       toast({
         title: "Upload failed",
         description:

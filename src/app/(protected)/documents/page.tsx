@@ -9,6 +9,7 @@ import { useState } from "react";
 import { Document } from "@prisma/client";
 import Loading from "../loading";
 import { useRouter } from "next/navigation";
+import { toast } from "../hooks/use-toast";
 
 const columns = [
   { key: "title", header: "Title", width: "3/4" },
@@ -17,14 +18,25 @@ const columns = [
 
 const DocumentsPage = () => {
   const [documents, setDocuments] = useState<Document[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
     const fetchDocuments = async () => {
-      const response = await getDocuments();
-      setDocuments(response);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        const response = await getDocuments();
+        setDocuments(response as Document[]);
+      } catch (error) {
+        console.error("Error fetching documents", error);
+        toast({
+          title: "Error fetching documents",
+          description: "Please try again later",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
+      }
     };
     fetchDocuments();
   }, []);

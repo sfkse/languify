@@ -1,10 +1,9 @@
 "use server";
-
-import { NextResponse } from "next/server";
 import { prisma } from "../lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId } from "./users";
+
 export async function createDocument(
   title: string,
   url: string,
@@ -33,29 +32,35 @@ export async function getDocument(id: string) {
 
 export async function getDocuments() {
   const { userId } = await auth();
+  console.log("----userId", userId);
   if (!userId) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    throw new Error("Unauthorized");
   }
   const user = await getUserByClerkId(userId);
 
   if (!user) {
-    return NextResponse.json({ error: "User not found" }, { status: 404 });
+    throw new Error("User not found");
   }
-  try {
-    let documents = await prisma.document.findMany({
-      where: {
-        userId: user.id,
-      },
-    });
-    documents = documents.map((document) => ({
-      ...document,
-      createdAt: document.createdAt.toLocaleDateString() as unknown as Date,
-    }));
+  let documents = await prisma.document.findMany({
+    where: {
+      userId: user.id,
+    },
+    select: {
+      id: true,
+      title: true,
+      url: true,
+      createdAt: true,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+  });
 
-    return documents;
-  } catch (error) {
-    console.error(error);
-    return [];
-  }
+  documents = documents.map((document) => ({
+    ...document,
+    createdAt: document.createdAt.toLocaleDateString() as unknown as Date,
+  }));
+
+  return documents;
 }
 

@@ -1,10 +1,19 @@
 "use client";
-import { Button } from "../ui/button";
+import { Button } from "@/app/(protected)/components/ui/button";
 import { Highlighter, PanelRight, Wand2 } from "lucide-react";
 import { cn } from "@/app/(protected)/lib/utils";
-import { createGlossary, rephraseText } from "../../actions/glossary";
-import { toast } from "../../hooks/use-toast";
+import {
+  createGlossary,
+  rephraseText,
+} from "@/app/(protected)/actions/glossary";
+import { toast } from "@/app/(protected)/hooks/use-toast";
 import { useState } from "react";
+import {
+  Tooltip,
+  TooltipProvider,
+  TooltipTrigger,
+  TooltipContent,
+} from "@/app/(protected)/components/ui/tooltip";
 
 const TextPanel = ({
   selectedText,
@@ -61,18 +70,27 @@ const TextPanel = ({
 
   return (
     <>
-      <Button
-        variant="outline"
-        size="icon"
-        onClick={() => {
-          setIsPanelOpen(!isPanelOpen);
-          setRephrasedText("");
-          setSelectedText("");
-        }}
-        className="z-40"
-      >
-        <PanelRight className="w-4 h-4" />
-      </Button>
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <Button
+              variant="outline"
+              size="icon"
+              onClick={() => {
+                setIsPanelOpen(!isPanelOpen);
+                setRephrasedText("");
+                setSelectedText("");
+              }}
+              className="z-40"
+            >
+              <PanelRight className="w-4 h-4" />
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>Rephrase Text</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
 
       <div
         className={cn(

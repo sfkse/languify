@@ -14,6 +14,12 @@ import { useEffect, useState } from "react";
 import { toast } from "../../hooks/use-toast";
 import { getDocumentGlossaries } from "../../actions/glossary";
 import { Glossary } from "@prisma/client";
+import {
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from "@/app/(protected)/components/ui/tooltip";
 
 const Drawer = ({
   isDrawerOpen,
@@ -52,11 +58,20 @@ const Drawer = ({
 
   return (
     <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-      <SheetTrigger asChild>
-        <Button variant="outline" size="icon">
-          <Eye className="w-4 h-4" />
-        </Button>
-      </SheetTrigger>
+      <TooltipProvider delayDuration={0}>
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon">
+                <Eye className="w-4 h-4" />
+              </Button>
+            </SheetTrigger>
+          </TooltipTrigger>
+          <TooltipContent side="left">
+            <p>View glossary</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
       <SheetContent side="bottom" className="h-[80vh]">
         <SheetHeader>
           <SheetTitle>Selected Text</SheetTitle>

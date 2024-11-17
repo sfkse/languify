@@ -1,3 +1,8 @@
+export const SUPPORTED_LANGUAGES = {
+  english: "English",
+  swedish: "Swedish",
+};
+
 const languageSpecifics: Record<string, any> = {
   english: {
     name: "English",
@@ -7,6 +12,7 @@ const languageSpecifics: Record<string, any> = {
       B1: "present perfect, conditionals type 1",
       B2: "all tenses, passive voice, conditionals",
       C1: "all complex structures, subjunctive, idioms",
+      C2: "masterful use of all structures, stylistic variations, subtle nuances, rhetoric devices",
     },
     culturalNotes: "Focus on international English standards",
   },
@@ -18,6 +24,7 @@ const languageSpecifics: Record<string, any> = {
       B1: "relative clauses, passive voice, future expressions, conjunctions",
       B2: "participles, advanced word order, subjunctive, s-passive",
       C1: "all verb forms, advanced particles, idiomatic expressions",
+      C2: "mastery of all language nuances, regional variations, literary Swedish, specialized terminology",
     },
     specificFeatures: {
       A1: {
@@ -93,6 +100,24 @@ const languageSpecifics: Record<string, any> = {
           "sophisticated style markers",
         ],
       },
+      C2: {
+        grammar: [
+          "mastery of all grammatical structures",
+          "sophisticated stylistic variations",
+          "archaic and specialized forms",
+          "rhetorical devices",
+          "subtle distinctions in meaning",
+          "advanced academic writing structures",
+        ],
+        vocabulary: [
+          "highly specialized terminology",
+          "archaic and literary expressions",
+          "subtle synonyms and nuances",
+          "professional jargon across fields",
+          "regional and social dialects",
+          "innovative language use",
+        ],
+      },
     },
     culturalNotes:
       "Consider Swedish cultural context and 'du-reformen' in formal/informal address",
@@ -130,6 +155,13 @@ const getLevelGuidelines = (level: string, language: string) => {
       sentenceLength: "unrestricted",
       connectors: "all advanced connectors",
       complexity: "highly complex structures",
+    },
+    C2: {
+      vocabulary:
+        "mastery level vocabulary, including technical, academic, and nuanced expressions",
+      sentenceLength: "unrestricted, with complex nested structures",
+      connectors: "all connectors with nuanced usage",
+      complexity: "native-like complexity, including subtle distinctions",
     },
   };
 

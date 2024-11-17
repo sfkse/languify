@@ -28,6 +28,6 @@ export async function getUserSettings(id: string) {
   const user = await prisma.user.findUnique({
     where: { id },
   });
-  return JSON.parse(user?.settings as string);
+  return user?.settings ? JSON.parse(user.settings as string) : null;
 }
 

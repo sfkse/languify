@@ -1,7 +1,7 @@
 "use client";
 import FileUpload from "@/app/(protected)/components/common/FileUpload";
 import PageContentWrapper from "@/app/(protected)/components/common/PageContentWrapper";
-import useUploadFile from "@/app/(protected)/hooks/useUploadFile";
+import useUploadFile from "@/app/(protected)/hooks/document/useUploadFile";
 import Loading from "@/app/(protected)/loading";
 
 export default function Home() {

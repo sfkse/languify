@@ -4,7 +4,7 @@ import { useState } from "react";
 import { toast } from "@/app/(protected)/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import { createDocument } from "@/app/(protected)/actions/documents";
-import { uploadCloudinary } from "../actions/cloudinary";
+import { uploadCloudinary } from "@/app/(protected)/actions/cloudinary";
 
 const useUploadFile = () => {
   const [isUploading, setIsUploading] = useState(false);

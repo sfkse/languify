@@ -2,12 +2,7 @@
 import { Button } from "@/app/(protected)/components/ui/button";
 import { Highlighter, PanelRight, Wand2 } from "lucide-react";
 import { cn } from "@/app/(protected)/lib/utils";
-import {
-  createGlossary,
-  rephraseText,
-} from "@/app/(protected)/actions/glossary";
-import { toast } from "@/app/(protected)/hooks/use-toast";
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import {
   Tooltip,
   TooltipProvider,
@@ -15,6 +10,10 @@ import {
   TooltipContent,
 } from "@/app/(protected)/components/ui/tooltip";
 import useHandleClickOutsidePanel from "../../hooks/useHandleClickOutsidePanel";
+import { DocumentSettings } from "../../types/documents";
+import useAddToGlossary from "../../hooks/glossary/useAddToGlossary";
+import useRephraseText from "../../hooks/document/useRephraseText";
+import useHandleClickOutsideDrawer from "../../hooks/useHandleClickOutsideDrawer";
 
 const TextPanel = ({
   selectedText,
@@ -23,6 +22,7 @@ const TextPanel = ({
   setIsPanelOpen,
   documentId,
   page,
+  settings,
 }: {
   selectedText: string;
   setSelectedText: (text: string) => void;
@@ -30,47 +30,16 @@ const TextPanel = ({
   setIsPanelOpen: (open: boolean) => void;
   documentId: string;
   page: number;
+  settings: DocumentSettings | null;
 }) => {
-  const [isLoading, setIsLoading] = useState(false);
-  const [isRephrasing, setIsRephrasing] = useState(false);
-  const [rephrasedText, setRephrasedText] = useState("");
-
   const panelRef = useRef<HTMLDivElement>(null);
   useHandleClickOutsidePanel(panelRef, setIsPanelOpen, setSelectedText);
+  useHandleClickOutsideDrawer();
 
-  const handleAddToGlossary = async () => {
-    try {
-      setIsLoading(true);
-      const glossaryText = `${selectedText} - ${rephrasedText}`;
-      await createGlossary(glossaryText, documentId, page);
+  const { addToGlossary, isLoading: isAddingToGlossary } = useAddToGlossary();
+  const { rephrase, isRephrasing, rephrasedText } = useRephraseText();
 
-      toast({
-        variant: "default",
-        title: "Added to glossary",
-        description: "The text has been added to the glossary",
-      });
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "There was an error adding to the glossary",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const handleRephrase = async () => {
-    try {
-      setIsRephrasing(true);
-      const msg = await rephraseText(selectedText);
-      setRephrasedText(msg || "");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsRephrasing(false);
-    }
-  };
+  const isButtonDisabled = !selectedText || isRephrasing || isAddingToGlossary;
 
   return (
     <>
@@ -82,7 +51,7 @@ const TextPanel = ({
               size="icon"
               onClick={() => {
                 setIsPanelOpen(!isPanelOpen);
-                setRephrasedText("");
+                // setRephrasedText("");
                 setSelectedText("");
               }}
             >
@@ -124,18 +93,22 @@ const TextPanel = ({
                 <Button
                   variant="outline"
                   className="w-full"
-                  onClick={handleRephrase}
-                  disabled={!selectedText || isLoading || isRephrasing}
+                  onClick={() =>
+                    rephrase(selectedText, settings as DocumentSettings)
+                  }
+                  disabled={isButtonDisabled}
                 >
                   <Wand2 />
                   {isRephrasing ? "Rephrasing..." : "Rephrase"}
                 </Button>
                 <Button
                   className="w-full"
-                  onClick={handleAddToGlossary}
-                  disabled={!selectedText || isLoading}
+                  onClick={() =>
+                    addToGlossary(selectedText, rephrasedText, documentId, page)
+                  }
+                  disabled={isButtonDisabled}
                 >
-                  {isLoading ? "Adding..." : "Add to glossary"}
+                  {isAddingToGlossary ? "Adding..." : "Add to glossary"}
                 </Button>
               </div>
             </>

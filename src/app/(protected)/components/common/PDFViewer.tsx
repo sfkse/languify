@@ -1,41 +1,39 @@
 "use client";
-import Preview from "./Preview";
-import Drawer from "./Drawer";
-import TextPanel from "./TextPanel";
-import { getDocument } from "../../actions/documents";
+import Preview from "@/app/(protected)/components/common/Preview";
+import Drawer from "@/app/(protected)/components/common/Drawer";
+import TextPanel from "@/app/(protected)/components/common/TextPanel";
 import Error from "@/app/(protected)/(pages)/documents/[id]/error";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { Document } from "@prisma/client";
+import { useState } from "react";
+import useFetchSingleDocument from "@/app/(protected)/hooks/document/useFetchSingleDocument";
+import useFetchDocumentSettings from "../../hooks/document/useFetchDocumentSettings";
 
 export function PDFViewer({ id }: { id: string }) {
   const [selectedText, setSelectedText] = useState("");
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const [document, setDocument] = useState<Document | null>(null);
-  const [error, setError] = useState<Error | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
+
+  const {
+    document,
+    error: documentError,
+    isLoading: documentIsLoading,
+  } = useFetchSingleDocument(id);
+
+  const {
+    settings,
+    error: documentSettingsError,
+    isLoading: documentSettingsIsLoading,
+  } = useFetchDocumentSettings(id);
+
+  const isLoading = documentIsLoading || documentSettingsIsLoading;
+  const error = documentError || documentSettingsError;
 
   const handleTextSelection = (text: string) => {
     setSelectedText(text);
     setIsPanelOpen(true);
   };
-
-  useEffect(() => {
-    const fetchDocument = async () => {
-      try {
-        const document: Document = await getDocument(id);
-        setDocument(document);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchDocument();
-  }, [id]);
 
   const handlePageChange = (page: number) => {
     setPage(page);
@@ -68,6 +66,7 @@ export function PDFViewer({ id }: { id: string }) {
             page={page}
             setIsPanelOpen={setIsPanelOpen}
             isPanelOpen={isPanelOpen}
+            settings={settings}
           />
         </div>
       </div>

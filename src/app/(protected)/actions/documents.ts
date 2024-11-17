@@ -2,7 +2,7 @@
 import { prisma } from "../lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "./users";
+import { getUserByClerkId, getUserSettings } from "./users";
 
 export async function createDocument(
   title: string,
@@ -61,5 +61,31 @@ export async function getDocuments() {
   }));
 
   return documents;
+}
+
+export async function getDocumentSettings(documentId: string) {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("Unauthorized");
+  }
+  const user = await getUserByClerkId(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  // Check if document settings exist, if not return user settings
+  let settings = await getSingleDocumentSettings(documentId);
+  if (!settings) {
+    settings = await getUserSettings(user.id);
+  }
+  return settings;
+}
+
+async function getSingleDocumentSettings(id: string) {
+  const document = await prisma.document.findUnique({
+    where: {
+      id,
+    },
+  });
+  return document?.settings ? JSON.parse(document.settings as string) : null;
 }
 

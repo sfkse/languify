@@ -43,14 +43,17 @@ export async function getDocumentGlossaries(documentId: string) {
   return glossaries;
 }
 
-export async function rephraseText(text: string) {
+export async function rephraseText(
+  text: string,
+  level: string,
+  targetLanguage: string
+) {
   console.log("api key", process.env.ANTHROPIC_API_KEY);
   const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: process.env.OPENROUTER_API_KEY,
   });
-  const level = "A1";
-  const targetLanguage = "swedish";
+  console.log("language", targetLanguage, "level", level);
 
   const completion = await openai.chat.completions.create({
     model: "anthropic/claude-3.5-sonnet:beta",

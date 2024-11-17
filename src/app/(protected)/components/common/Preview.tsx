@@ -5,7 +5,6 @@ import { Document, Page, pdfjs } from "react-pdf";
 import PreviewToolbar from "@/app/(protected)/components/common/PreviewToolbar";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import "react-pdf/dist/esm/Page/TextLayer.css";
-import useHandleClickOutsideDrawer from "../../hooks/useHandleClickOutsideDrawer";
 
 // pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 //   "pdfjs-dist/build/pdf.worker.min.mjs",
@@ -28,7 +27,6 @@ const Preview = ({
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
   const [numPages, setNumPages] = useState(0);
-  useHandleClickOutsideDrawer();
 
   const onDocumentLoadSuccess = ({ numPages }: { numPages: number }) => {
     setNumPages(numPages);

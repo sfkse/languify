@@ -13,6 +13,7 @@ import { SourceLanguage, UserSettings } from "@/app/(protected)/types/user";
 import { useState } from "react";
 import { toast } from "@/app/(protected)/hooks/use-toast";
 import { updateUserSettings } from "@/app/(protected)/actions/users";
+import { SUPPORTED_LANGUAGES } from "../../lib/prompt";
 
 const defaultSettings: UserSettings = {
   language: {
@@ -33,7 +34,7 @@ const SettingsOptions = ({
     initialSettings || defaultSettings
   );
   const [isLoading, setIsLoading] = useState(false);
-  console.log(typeof settings);
+  console.log(Object.entries(SUPPORTED_LANGUAGES));
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
@@ -80,9 +81,9 @@ const SettingsOptions = ({
             <SelectValue placeholder="Select a language" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="en">English</SelectItem>
-            <SelectItem value="fr">French</SelectItem>
-            <SelectItem value="swedish">Swedish</SelectItem>
+            {Object.entries(SUPPORTED_LANGUAGES).map(([key, value]) => (
+              <SelectItem value={key}>{value}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
       </div>

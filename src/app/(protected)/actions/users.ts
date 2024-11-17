@@ -15,3 +15,11 @@ export async function getUserByClerkId(clerkId: string) {
   return user;
 }
 
+export async function updateUserSettings(id: string, settings: any) {
+  const user = await prisma.user.update({
+    where: { id },
+    data: { settings },
+  });
+  return user;
+}
+

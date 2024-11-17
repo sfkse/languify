@@ -8,7 +8,7 @@ import {
   SheetTitle,
 } from "@/app/(protected)/components/ui/sheet";
 import { Button } from "@/app/(protected)/components/ui/button";
-import { Eye } from "lucide-react";
+import { Download, Eye } from "lucide-react";
 import DataTable from "./DataTable";
 import { useEffect, useState } from "react";
 import { toast } from "../../hooks/use-toast";
@@ -54,6 +54,8 @@ const Drawer = ({
   const columns = [
     { key: "text", header: "Text", width: "3/4" },
     { key: "page", header: "Page", width: "1/4" },
+    { key: "createdAt", header: "Added", width: "1/4" },
+    { key: "actions", header: "Actions", width: "1/4" },
   ];
 
   return (
@@ -74,7 +76,17 @@ const Drawer = ({
       </TooltipProvider>
       <SheetContent side="bottom" className="h-[80vh]">
         <SheetHeader>
-          <SheetTitle>Selected Text</SheetTitle>
+          <SheetTitle className="flex justify-between items-center pr-8">
+            Glossary
+            <Button
+              variant="outline"
+              size="icon"
+              title="Download glossary"
+              onClick={() => console.log("Download")}
+            >
+              <Download className="w-4 h-4" />
+            </Button>
+          </SheetTitle>
           <SheetDescription>
             <DataTable
               columns={columns}

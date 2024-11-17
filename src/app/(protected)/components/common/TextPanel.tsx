@@ -7,13 +7,14 @@ import {
   rephraseText,
 } from "@/app/(protected)/actions/glossary";
 import { toast } from "@/app/(protected)/hooks/use-toast";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import {
   Tooltip,
   TooltipProvider,
   TooltipTrigger,
   TooltipContent,
 } from "@/app/(protected)/components/ui/tooltip";
+import useHandleClickOutsidePanel from "../../hooks/useHandleClickOutsidePanel";
 
 const TextPanel = ({
   selectedText,
@@ -33,6 +34,9 @@ const TextPanel = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isRephrasing, setIsRephrasing] = useState(false);
   const [rephrasedText, setRephrasedText] = useState("");
+
+  const panelRef = useRef<HTMLDivElement>(null);
+  useHandleClickOutsidePanel(panelRef, setIsPanelOpen, setSelectedText);
 
   const handleAddToGlossary = async () => {
     try {
@@ -81,7 +85,6 @@ const TextPanel = ({
                 setRephrasedText("");
                 setSelectedText("");
               }}
-              className="z-40"
             >
               <PanelRight className="w-4 h-4" />
             </Button>
@@ -93,6 +96,7 @@ const TextPanel = ({
       </TooltipProvider>
 
       <div
+        ref={panelRef}
         className={cn(
           "fixed -right-10 top-1/2 -translate-y-1/2 h-96 w-80 overflow-auto bg-background border-l shadow-lg transform transition-transform duration-300 ease-in-out z-30 p-6 rounded-l-lg",
           isPanelOpen ? "translate-x-0 right-0" : "translate-x-full"
@@ -108,11 +112,10 @@ const TextPanel = ({
               <p className="text-sm text-muted-foreground">{selectedText}</p>
               {rephrasedText && (
                 <>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground underline">
                     Rephrased Text
                   </p>
                   <p className="text-sm text-muted-foreground">
-                    <br />
                     {rephrasedText}
                   </p>
                 </>

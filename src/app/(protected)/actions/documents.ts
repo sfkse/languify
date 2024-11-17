@@ -32,7 +32,6 @@ export async function getDocument(id: string) {
 
 export async function getDocuments() {
   const { userId } = await auth();
-  console.log("----userId", userId);
   if (!userId) {
     throw new Error("Unauthorized");
   }

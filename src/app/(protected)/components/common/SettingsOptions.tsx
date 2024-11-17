@@ -6,10 +6,12 @@ import {
   SelectTrigger,
 } from "../ui/select";
 import { Button } from "../ui/button";
+import LevelSlider from "./LevelSlider";
 
 const SettingsOptions = () => {
   return (
-    <>
+    <form>
+      <LevelSlider />
       <div className="flex flex-row justify-between items-center gap-10 mt-10">
         <span className="w-40">Source language</span>
         <Select>
@@ -37,8 +39,9 @@ const SettingsOptions = () => {
       <Button variant="default" className="w-full mt-10">
         Save
       </Button>
-    </>
+    </form>
   );
 };
 
 export default SettingsOptions;
+

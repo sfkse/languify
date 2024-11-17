@@ -26,6 +26,7 @@ model User {
   email     String     @unique
   clerkId   String     @unique
   username  String?
+  settings  Json?
   documents Document[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt

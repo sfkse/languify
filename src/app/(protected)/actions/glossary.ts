@@ -31,9 +31,15 @@ export async function createGlossary(
 }
 
 export async function getDocumentGlossaries(documentId: string) {
-  const glossaries = await prisma.glossary.findMany({
+  let glossaries = await prisma.glossary.findMany({
     where: { documentId },
+    orderBy: { createdAt: "desc" },
   });
+
+  glossaries = glossaries.map((glossary) => ({
+    ...glossary,
+    createdAt: glossary.createdAt.toLocaleDateString() as unknown as Date,
+  }));
   return glossaries;
 }
 

@@ -1,21 +1,24 @@
-"use client";
 import Breadcrumbs from "@/app/(protected)/components/common/Breadcrumbs";
 import PageContentWrapper from "@/app/(protected)/components/common/PageContentWrapper";
 import SettingsOptions from "@/app/(protected)/components/common/SettingsOptions";
-import LevelSlider from "@/app/(protected)/components/common/LevelSlider";
 import { Info } from "lucide-react";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/app/(protected)/components/ui/popover";
+import { auth } from "@clerk/nextjs/server";
+import { getUserByClerkId } from "../../actions/users";
 
 const breadcrumbs = [
   { label: "Home", href: "/", isActive: false },
   { label: "Settings", href: "/settings", isActive: true },
 ];
 
-export default function SettingsPage() {
+export default async function SettingsPage() {
+  const { userId } = await auth();
+  const user = await getUserByClerkId(userId!);
+  console.log(user);
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -34,7 +37,7 @@ export default function SettingsPage() {
                 </PopoverContent>
               </Popover>
             </p>
-            <LevelSlider />
+
             <SettingsOptions />
           </div>
         </div>

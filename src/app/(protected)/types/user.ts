@@ -3,6 +3,7 @@ export interface User {
   email: string;
   name: string;
   username: string;
+  clerkId: string;
 }
 
 export type SourceLanguage = "en" | "fr" | "swedish";
@@ -38,4 +39,6 @@ export function stringifyUserSettings(
 ): UserSettingsJson {
   return JSON.stringify(settings);
 }
+
+export type UserWithoutSettings = Omit<User, "settings">;
 

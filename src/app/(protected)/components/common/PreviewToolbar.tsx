@@ -36,7 +36,7 @@ const PreviewToolbar = ({
   documentId: string;
 }) => {
   const [open, setOpen] = useState(false);
-  const { settings, mutate } = useFetchDocumentSettings(documentId); // TODO: Decide usage of mutate
+  const { settings } = useFetchDocumentSettings(documentId); // TODO: Decide usage of mutate
 
   const handleDialogClose = () => {
     // mutate(); // Refresh settings data when dialog closes

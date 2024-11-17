@@ -22,6 +22,7 @@ const useAddToGlossary = () => {
         description: "The text has been added to the glossary",
       });
     } catch (error) {
+      console.error(error);
       toast({
         variant: "destructive",
         title: "Error",

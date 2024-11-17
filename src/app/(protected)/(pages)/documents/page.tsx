@@ -6,10 +6,10 @@ import { Input } from "@/app/(protected)/components/ui/input";
 import { getDocuments } from "../../actions/documents";
 import { useEffect } from "react";
 import { useState } from "react";
-import { Document } from "@prisma/client";
 import Loading from "../../loading";
 import { useRouter } from "next/navigation";
 import { toast } from "../../hooks/use-toast";
+import { IDocument } from "../../types/documents";
 
 const columns = [
   { key: "title", header: "Title", width: "3/4" },
@@ -22,7 +22,7 @@ const breadcrumbs = [
 ];
 
 const DocumentsPage = () => {
-  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documents, setDocuments] = useState<IDocument[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
 
@@ -31,7 +31,7 @@ const DocumentsPage = () => {
       try {
         setIsLoading(true);
         const response = await getDocuments();
-        setDocuments(response as Document[]);
+        setDocuments(response as IDocument[]);
       } catch (error) {
         console.error("Error fetching documents", error);
         toast({
@@ -57,7 +57,7 @@ const DocumentsPage = () => {
         <div className="rounded-md border mt-5 max-w-5xl">
           <DataTable
             columns={columns}
-            data={documents}
+            data={documents as IDocument[]}
             onSelect={(id) => router.push(`/documents/${id}`)}
             onEdit={(id) => console.log("Edit", id)}
             onDelete={(id) => console.log("Delete", id)}

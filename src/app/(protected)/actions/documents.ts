@@ -3,8 +3,9 @@ import { prisma } from "../lib/prisma";
 import { v4 as uuidv4 } from "uuid";
 import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId, getUserSettings } from "./users";
-import { DocumentSettings } from "../types/documents";
+import { IDocumentSettings } from "../types/documents";
 import { revalidatePath } from "next/cache";
+
 export async function createDocument(title: string, url: string) {
   const { userId } = await auth();
   if (!userId) {
@@ -27,7 +28,7 @@ export async function createDocument(title: string, url: string) {
 }
 
 export async function getDocument(id: string) {
-  let document = await prisma.document.findUnique({
+  const document = await prisma.document.findUnique({
     where: {
       id,
     },
@@ -37,7 +38,7 @@ export async function getDocument(id: string) {
   return document
     ? {
         ...document,
-        settings: JSON.parse(document.settings as string) as DocumentSettings,
+        settings: JSON.parse(document.settings as string) as IDocumentSettings,
       }
     : null;
 }
@@ -103,7 +104,7 @@ async function getSingleDocumentSettings(id: string) {
 }
 
 export async function updateDocumentSettings(
-  settings: DocumentSettings,
+  settings: IDocumentSettings,
   documentId: string
 ) {
   const { userId } = await auth();

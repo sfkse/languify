@@ -41,7 +41,6 @@ const TextPanel = ({
   const { rephrase, isRephrasing, rephrasedText } = useRephraseText();
 
   const isButtonDisabled = !selectedText || isRephrasing || isAddingToGlossary;
-  console.log(language, level);
   return (
     <>
       <TooltipProvider delayDuration={0}>
@@ -117,7 +116,7 @@ const TextPanel = ({
             <p className="text-sm text-muted-foreground text-center h-full flex flex-col items-center justify-center">
               <Highlighter className="w-10 h-10" />
               <span className="mt-2">
-                Let's rephrase some text. Highlight some text to get started.
+                Let´s rephrase some text. Highlight some text to get started.
               </span>
             </p>
           )}

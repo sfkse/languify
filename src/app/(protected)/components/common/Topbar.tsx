@@ -8,7 +8,6 @@ const Topbar = () => {
   const router = useRouter();
 
   const handleUploadClick = () => {
-    console.log("upload clicked");
     router.push("/");
     // const fileInput = document.getElementById("pdf-upload");
     // if (fileInput) {

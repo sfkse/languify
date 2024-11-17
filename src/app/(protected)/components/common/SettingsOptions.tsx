@@ -17,13 +17,13 @@ import {
 import { useState } from "react";
 import { toast } from "@/app/(protected)/hooks/use-toast";
 import { updateUserSettings } from "@/app/(protected)/actions/users";
-import { SUPPORTED_LANGUAGES } from "../../lib/prompt";
-import { updateDocumentSettings } from "../../actions/documents";
-import { DocumentSettings } from "../../types/documents";
+import { SUPPORTED_LANGUAGES } from "@/app/(protected)/lib/prompt";
+import { updateDocumentSettings } from "@/app/(protected)/actions/documents";
+import { IDocumentSettings } from "@/app/(protected)/types/documents";
 
 type SettingsType = "user" | "document";
 type SettingsProps = {
-  settings: UserSettings | DocumentSettings;
+  settings: UserSettings | IDocumentSettings;
   type: SettingsType;
   documentId?: string;
   onSettingsSaved?: () => void;
@@ -42,7 +42,7 @@ const SettingsOptions = ({
   documentId,
   onSettingsSaved,
 }: SettingsProps) => {
-  const [settings, setSettings] = useState<UserSettings | DocumentSettings>(
+  const [settings, setSettings] = useState<UserSettings | IDocumentSettings>(
     initialSettings || defaultSettings
   );
   const [isLoading, setIsLoading] = useState(false);
@@ -56,7 +56,7 @@ const SettingsOptions = ({
       } else {
         if (documentId) {
           await updateDocumentSettings(
-            settings as DocumentSettings,
+            settings as IDocumentSettings,
             documentId
           );
         } else {
@@ -108,7 +108,9 @@ const SettingsOptions = ({
           </SelectTrigger>
           <SelectContent>
             {Object.entries(SUPPORTED_LANGUAGES).map(([key, value]) => (
-              <SelectItem value={key}>{value}</SelectItem>
+              <SelectItem key={key} value={key}>
+                {value}
+              </SelectItem>
             ))}
           </SelectContent>
         </Select>

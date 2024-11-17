@@ -17,7 +17,7 @@ const Popup = ({ show }: { show: boolean }) => {
     <Dialog open={show}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="my-4">Let's get you started</DialogTitle>
+          <DialogTitle className="my-4">Let´s get you started</DialogTitle>
           <DialogDescription>
             Set your language and level to get started. This will be used for
             all your documents by default.

@@ -3,7 +3,26 @@ export const SUPPORTED_LANGUAGES = {
   swedish: "Swedish",
 };
 
-const languageSpecifics: Record<string, any> = {
+// Define proper types for language specifics
+type GrammarFocus = {
+  [key: string]: string;
+};
+
+type SpecificFeatures = {
+  grammar: string[];
+  vocabulary: string[];
+};
+
+type LanguageSpecific = {
+  name: string;
+  grammarFocus: GrammarFocus;
+  specificFeatures?: {
+    [key: string]: SpecificFeatures;
+  };
+  culturalNotes: string;
+};
+
+const languageSpecifics: Record<string, LanguageSpecific> = {
   english: {
     name: "English",
     grammarFocus: {
@@ -124,8 +143,19 @@ const languageSpecifics: Record<string, any> = {
   },
 };
 
-const getLevelGuidelines = (level: string, language: string) => {
-  const baseGuidelines: Record<string, any> = {
+type LevelGuideline = {
+  vocabulary: string;
+  sentenceLength: string;
+  connectors: string;
+  complexity: string;
+  grammarFocus?: string;
+};
+
+const getLevelGuidelines = (
+  level: string,
+  language: string
+): LevelGuideline => {
+  const baseGuidelines: Record<string, LevelGuideline> = {
     A1: {
       vocabulary: "basic vocabulary, high-frequency words only",
       sentenceLength: "very short (5-8 words)",
@@ -166,21 +196,23 @@ const getLevelGuidelines = (level: string, language: string) => {
   };
 
   return {
-    ...baseGuidelines,
+    ...baseGuidelines[level],
     grammarFocus:
       languageSpecifics[language].grammarFocus[level] ||
-      languageSpecifics[language]?.specificFeatures[level]?.grammar,
+      languageSpecifics[language]?.specificFeatures?.[level]?.grammar?.join(
+        ", "
+      ),
   };
 };
 
 const getSwedishSpecificGuidelines = (level: string) => {
   const features =
-    languageSpecifics.swedish.specificFeatures[
+    languageSpecifics?.swedish?.specificFeatures?.[
       level as keyof typeof languageSpecifics.swedish.specificFeatures
     ];
   return {
-    grammarPoints: features.grammar.join(", "),
-    vocabularyFocus: features.vocabulary.join(", "),
+    grammarPoints: features?.grammar?.join(", "),
+    vocabularyFocus: features?.vocabulary?.join(", "),
   };
 };
 
@@ -189,10 +221,7 @@ export const createPrompt = (
   level: string,
   targetLanguage: string
 ) => {
-  const guidelines: Record<string, any> = getLevelGuidelines(
-    level,
-    targetLanguage
-  );
+  const guidelines: LevelGuideline = getLevelGuidelines(level, targetLanguage);
   const langSpecifics =
     languageSpecifics[targetLanguage as keyof typeof languageSpecifics];
 

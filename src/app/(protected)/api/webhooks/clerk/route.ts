@@ -3,6 +3,7 @@ import { headers } from "next/headers";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { createUser } from "@/app/(protected)/actions/users";
 import { v4 as uuidv4 } from "uuid";
+import { UserWithoutSettings } from "@/app/(protected)/types/user";
 
 export async function POST(req: Request) {
   // You can find this in the Clerk Dashboard -> Webhooks -> choose the endpoint
@@ -13,7 +14,6 @@ export async function POST(req: Request) {
       "Please add WEBHOOK_SECRET from Clerk Dashboard to .env or .env.local"
     );
   }
-  console.log("Webhook secret", WEBHOOK_SECRET);
   // Get the headers
   const headerPayload = await headers();
   const svix_id = headerPayload.get("svix-id");
@@ -30,7 +30,6 @@ export async function POST(req: Request) {
   // Get the body
   const payload = await req.json();
   const body = JSON.stringify(payload);
-  console.log("Body", body);
   // Create a new Svix instance with your secret.
   const wh = new Webhook(WEBHOOK_SECRET);
 
@@ -49,9 +48,7 @@ export async function POST(req: Request) {
       status: 400,
     });
   }
-  console.log("Event", evt);
   // Do something with the payload
-  // For this guide, you simply log the payload to the console
   const { id } = evt.data;
   const eventType = evt.type;
 
@@ -61,13 +58,12 @@ export async function POST(req: Request) {
       clerkId: id!,
       email: evt.data.email_addresses[0].email_address,
       username: evt.data.username,
+      name: evt.data.first_name + " " + evt.data.last_name,
       createdAt: new Date(),
       updatedAt: new Date(),
     };
     try {
-      console.log(userData);
-      await createUser(userData);
-      console.log("User created", evt.data.id);
+      await createUser(userData as UserWithoutSettings);
     } catch (error) {
       console.error(error);
       return new Response("Internal Server Error", { status: 500 });

@@ -1,4 +1,5 @@
-export interface Document {
+export interface IDocument {
+  [key: string]: string | number | Date;
   id: string;
   title: string;
   url: string;
@@ -6,7 +7,7 @@ export interface Document {
   createdAt: Date;
 }
 
-export interface DocumentSettings {
+export interface IDocumentSettings {
   level: string;
   language: { sourceLanguage: string };
 }

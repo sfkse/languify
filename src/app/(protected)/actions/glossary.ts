@@ -11,9 +11,6 @@ export async function createGlossary(
   documentId: string,
   page: number
 ) {
-  console.log("text", text);
-  console.log("documentId", documentId);
-  console.log("page", page);
   try {
     const glossary = await prisma.glossary.create({
       data: {
@@ -48,12 +45,10 @@ export async function rephraseText(
   level: string,
   targetLanguage: string
 ) {
-  console.log("api key", process.env.ANTHROPIC_API_KEY);
   const openai = new OpenAI({
     baseURL: "https://openrouter.ai/api/v1",
     apiKey: process.env.OPENROUTER_API_KEY,
   });
-  console.log("language", targetLanguage, "level", level);
 
   const completion = await openai.chat.completions.create({
     model: "anthropic/claude-3.5-sonnet:beta",
@@ -64,7 +59,6 @@ export async function rephraseText(
     ) as ChatCompletionMessageParam[],
   });
 
-  console.log("completion", completion);
   return completion.choices[0].message.content;
 }
 

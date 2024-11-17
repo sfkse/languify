@@ -1,17 +1,14 @@
 "use server";
-import { User } from "@prisma/client";
 import { prisma } from "../lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { UserSettings } from "../types/user";
 import { revalidatePath } from "next/cache";
+import { UserWithoutSettings } from "../types/user";
 
-export async function createUser(
-  user: Omit<User, "settings"> & { settings?: any }
-) {
+export async function createUser(user: UserWithoutSettings) {
   const newUser = await prisma.user.create({
     data: {
       ...user,
-      settings: user.settings ? JSON.stringify(user.settings) : undefined,
     },
   });
   return newUser;

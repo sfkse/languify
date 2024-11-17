@@ -20,7 +20,7 @@ const useHandleClickOutsidePanel = (
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, [setIsPanelOpen, setSelectedText]);
+  }, [setIsPanelOpen, setSelectedText, panelRef]);
 };
 
 export default useHandleClickOutsidePanel;

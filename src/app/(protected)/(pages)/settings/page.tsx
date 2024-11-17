@@ -32,7 +32,10 @@ export default async function SettingsPage({
     redirect("/sign-in");
   }
   const user = await getUserByClerkId(userId!);
-  const settings = (await getUserSettings(user?.id!)) as UserSettings | null;
+  if (!user) {
+    redirect("/sign-in");
+  }
+  const settings = (await getUserSettings(user.id)) as UserSettings | null;
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -48,7 +51,7 @@ export default async function SettingsPage({
                   <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                 </PopoverTrigger>
                 <PopoverContent>
-                  Your settings will be used for all your documents if you don't
+                  Your settings will be used for all your documents if you don´t
                   specify a different settings for a document.
                 </PopoverContent>
               </Popover>

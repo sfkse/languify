@@ -10,7 +10,6 @@ import {
   TooltipContent,
 } from "@/app/(protected)/components/ui/tooltip";
 import useHandleClickOutsidePanel from "../../hooks/useHandleClickOutsidePanel";
-import { DocumentSettings } from "../../types/documents";
 import useAddToGlossary from "../../hooks/glossary/useAddToGlossary";
 import useRephraseText from "../../hooks/document/useRephraseText";
 import useHandleClickOutsideDrawer from "../../hooks/useHandleClickOutsideDrawer";
@@ -22,7 +21,8 @@ const TextPanel = ({
   setIsPanelOpen,
   documentId,
   page,
-  settings,
+  language,
+  level,
 }: {
   selectedText: string;
   setSelectedText: (text: string) => void;
@@ -30,7 +30,8 @@ const TextPanel = ({
   setIsPanelOpen: (open: boolean) => void;
   documentId: string;
   page: number;
-  settings: DocumentSettings | null;
+  language?: string;
+  level?: string;
 }) => {
   const panelRef = useRef<HTMLDivElement>(null);
   useHandleClickOutsidePanel(panelRef, setIsPanelOpen, setSelectedText);
@@ -40,7 +41,7 @@ const TextPanel = ({
   const { rephrase, isRephrasing, rephrasedText } = useRephraseText();
 
   const isButtonDisabled = !selectedText || isRephrasing || isAddingToGlossary;
-
+  console.log(language, level);
   return (
     <>
       <TooltipProvider delayDuration={0}>
@@ -94,7 +95,7 @@ const TextPanel = ({
                   variant="outline"
                   className="w-full"
                   onClick={() =>
-                    rephrase(selectedText, settings as DocumentSettings)
+                    language && level && rephrase(selectedText, language, level)
                   }
                   disabled={isButtonDisabled}
                 >

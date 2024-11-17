@@ -1,6 +1,9 @@
 "use server";
 import { User } from "@prisma/client";
 import { prisma } from "../lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { UserSettings } from "../types/user";
+import { revalidatePath } from "next/cache";
 
 export async function createUser(user: User) {
   const newUser = await prisma.user.create({
@@ -16,12 +19,20 @@ export async function getUserByClerkId(clerkId: string) {
   return user;
 }
 
-export async function updateUserSettings(id: string, settings: object) {
-  const user = await prisma.user.update({
-    where: { id },
+export async function updateUserSettings(settings: UserSettings) {
+  const { userId } = await auth();
+  if (!userId) {
+    throw new Error("User not authenticated");
+  }
+  const user = await getUserByClerkId(userId);
+  if (!user) {
+    throw new Error("User not found");
+  }
+  await prisma.user.update({
+    where: { id: user.id },
     data: { settings: JSON.stringify(settings) },
   });
-  return user;
+  revalidatePath("/settings");
 }
 
 export async function getUserSettings(id: string) {

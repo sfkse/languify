@@ -9,11 +9,12 @@ import {
 } from "@/app/(protected)/components/ui/sheet";
 import { Button } from "@/app/(protected)/components/ui/button";
 import { Download, Eye } from "lucide-react";
-import DataTable from "./DataTable";
+import DataTable from "@/app/(protected)/components/common/DataTable";
 import { useEffect, useState } from "react";
-import { toast } from "../../hooks/use-toast";
-import { getDocumentGlossaries } from "../../actions/glossary";
+import { toast } from "@/app/(protected)/hooks/use-toast";
+import { getDocumentGlossaries } from "@/app/(protected)/actions/glossary";
 import { Glossary } from "@prisma/client";
+import Loading from "@/app/(protected)/loading";
 import {
   Tooltip,
   TooltipTrigger,
@@ -31,11 +32,13 @@ const Drawer = ({
   documentId: string;
 }) => {
   const [data, setData] = useState<Glossary[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (isDrawerOpen) {
       const getGlossaries = async () => {
         try {
+          setIsLoading(true);
           const glossaries = await getDocumentGlossaries(documentId);
           setData(glossaries);
         } catch (error) {
@@ -45,6 +48,8 @@ const Drawer = ({
             title: "Error",
             description: "There was an error getting the glossaries",
           });
+        } finally {
+          setIsLoading(false);
         }
       };
       getGlossaries();
@@ -88,13 +93,17 @@ const Drawer = ({
             </Button>
           </SheetTitle>
           <SheetDescription>
-            <DataTable
-              columns={columns}
-              data={data}
-              onEdit={(id) => console.log("Edit", id)}
-              onDelete={(id) => console.log("Delete", id)}
-              maxTextLength={300}
-            />
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <DataTable
+                columns={columns}
+                data={data}
+                onEdit={(id) => console.log("Edit", id)}
+                onDelete={(id) => console.log("Delete", id)}
+                maxTextLength={300}
+              />
+            )}
           </SheetDescription>
         </SheetHeader>
       </SheetContent>

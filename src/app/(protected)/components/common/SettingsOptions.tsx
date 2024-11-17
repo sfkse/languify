@@ -9,12 +9,25 @@ import {
 } from "@/app/(protected)/components/ui/select";
 import { Button } from "@/app/(protected)/components/ui/button";
 import LevelSlider from "@/app/(protected)/components/common/LevelSlider";
-import { SourceLanguage, UserSettings } from "@/app/(protected)/types/user";
+import {
+  Level,
+  SourceLanguage,
+  UserSettings,
+} from "@/app/(protected)/types/user";
 import { useState } from "react";
 import { toast } from "@/app/(protected)/hooks/use-toast";
 import { updateUserSettings } from "@/app/(protected)/actions/users";
 import { SUPPORTED_LANGUAGES } from "../../lib/prompt";
+import { updateDocumentSettings } from "../../actions/documents";
+import { DocumentSettings } from "../../types/documents";
 
+type SettingsType = "user" | "document";
+type SettingsProps = {
+  settings: UserSettings | DocumentSettings;
+  type: SettingsType;
+  documentId?: string;
+  onSettingsSaved?: () => void;
+};
 const defaultSettings: UserSettings = {
   language: {
     sourceLanguage: "en",
@@ -25,26 +38,36 @@ const defaultSettings: UserSettings = {
 
 const SettingsOptions = ({
   settings: initialSettings,
-  userId,
-}: {
-  settings: UserSettings | null;
-  userId: string;
-}) => {
-  const [settings, setSettings] = useState<UserSettings>(
+  type = "user",
+  documentId,
+  onSettingsSaved,
+}: SettingsProps) => {
+  const [settings, setSettings] = useState<UserSettings | DocumentSettings>(
     initialSettings || defaultSettings
   );
   const [isLoading, setIsLoading] = useState(false);
-  console.log(Object.entries(SUPPORTED_LANGUAGES));
+
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    console.log(userId);
     try {
-      await updateUserSettings(userId, settings);
+      if (type === "user") {
+        await updateUserSettings(settings as UserSettings);
+      } else {
+        if (documentId) {
+          await updateDocumentSettings(
+            settings as DocumentSettings,
+            documentId
+          );
+        } else {
+          throw new Error("Document ID is required");
+        }
+      }
       toast({
         title: "Settings saved",
         description: "Your settings have been updated successfully.",
       });
+      onSettingsSaved?.();
     } catch (error) {
       console.error("Error updating user settings:", error);
       toast({
@@ -54,13 +77,16 @@ const SettingsOptions = ({
       });
     } finally {
       setIsLoading(false);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1000);
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <LevelSlider
-        value={settings.level}
+        value={settings.level as Level}
         onChange={(level) => setSettings({ ...settings, level })}
       />
       <div className="flex flex-row justify-between items-center gap-10 mt-10">

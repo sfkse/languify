@@ -14,13 +14,19 @@ import {
 } from "@/app/(protected)/actions/users";
 import { redirect } from "next/navigation";
 import { UserSettings } from "../../types/user";
+import Popup from "../../components/common/Popup";
 
 const breadcrumbs = [
   { label: "Home", href: "/", isActive: false },
   { label: "Settings", href: "/settings", isActive: true },
 ];
 
-export default async function SettingsPage() {
+export default async function SettingsPage({
+  searchParams,
+}: {
+  searchParams: { register: string };
+}) {
+  const { register: showRegisterPopup } = searchParams;
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
@@ -30,6 +36,7 @@ export default async function SettingsPage() {
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <Popup show={showRegisterPopup === "true"} />
       <PageContentWrapper>
         <div className="flex flex-col gap-8 max-w-2xl">
           <div className="flex flex-col gap-4">
@@ -41,12 +48,13 @@ export default async function SettingsPage() {
                   <Info className="w-4 h-4 text-muted-foreground cursor-help" />
                 </PopoverTrigger>
                 <PopoverContent>
-                  Your settings will be used for all your documents.
+                  Your settings will be used for all your documents if you don't
+                  specify a different settings for a document.
                 </PopoverContent>
               </Popover>
             </p>
 
-            <SettingsOptions settings={settings} userId={user?.id!} />
+            <SettingsOptions settings={settings as UserSettings} type="user" />
           </div>
         </div>
       </PageContentWrapper>

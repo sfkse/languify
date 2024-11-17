@@ -1,27 +1,29 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { DocumentSettings } from "@/app/(protected)/types/documents";
 import { getDocumentSettings } from "@/app/(protected)/actions/documents";
-
-const useFetchDocumentSettings = (id: string) => {
+import { useRouter } from "next/navigation";
+const useFetchDocumentSettings = (documentId: string) => {
   const [settings, setSettings] = useState<DocumentSettings | null>(null);
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const router = useRouter();
+  const fetchSettings = useCallback(async () => {
+    try {
+      const settings = await getDocumentSettings(documentId);
+      setSettings(settings);
+    } catch (error) {
+      setError(error as Error);
+    } finally {
+      setIsLoading(false);
+      // window.location.reload();
+    }
+  }, [documentId]);
 
   useEffect(() => {
-    const fetchSettings = async () => {
-      try {
-        const settings = await getDocumentSettings(id);
-        setSettings(settings);
-      } catch (error) {
-        setError(error as Error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
     fetchSettings();
-  }, [id]);
+  }, [fetchSettings]);
 
-  return { settings, error, isLoading };
+  return { settings, error, isLoading, mutate: fetchSettings };
 };
 
 export default useFetchDocumentSettings;

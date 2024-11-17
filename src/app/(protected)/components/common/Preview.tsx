@@ -18,11 +18,13 @@ const Preview = ({
   onTextSelect,
   onPageChange,
   page,
+  documentId,
 }: {
   url: string;
   onTextSelect: (text: string) => void;
   onPageChange: (page: number) => void;
   page: number;
+  documentId: string;
 }) => {
   const [rotation, setRotation] = useState(0);
   const [scale, setScale] = useState(1);
@@ -61,6 +63,7 @@ const Preview = ({
     <div className="w-full max-w-5xl">
       <div className="flex flex-col items-center gap-4 p-4 rounded-lg bg-muted">
         <PreviewToolbar
+          documentId={documentId}
           pageNumber={page}
           numPages={numPages}
           changePage={changePage}

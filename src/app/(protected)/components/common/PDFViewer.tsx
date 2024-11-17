@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import useFetchSingleDocument from "@/app/(protected)/hooks/document/useFetchSingleDocument";
 import useFetchDocumentSettings from "../../hooks/document/useFetchDocumentSettings";
+import Loading from "../../loading";
 
 export function PDFViewer({ id }: { id: string }) {
   const [selectedText, setSelectedText] = useState("");
@@ -39,7 +40,7 @@ export function PDFViewer({ id }: { id: string }) {
     setPage(page);
   };
 
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading) return <Loading />;
   if (error)
     return <Error error={error} reset={() => router.push("/documents")} />;
   if (!document) return <div>Document not found</div>;
@@ -52,6 +53,7 @@ export function PDFViewer({ id }: { id: string }) {
           onTextSelect={handleTextSelection}
           onPageChange={handlePageChange}
           page={page}
+          documentId={document.id}
         />
         <div className="fixed right-4 top-1/2 -translate-y-1/2 flex flex-col gap-2 z-40">
           <Drawer
@@ -66,7 +68,8 @@ export function PDFViewer({ id }: { id: string }) {
             page={page}
             setIsPanelOpen={setIsPanelOpen}
             isPanelOpen={isPanelOpen}
-            settings={settings}
+            language={settings?.language.sourceLanguage}
+            level={settings?.level}
           />
         </div>
       </div>

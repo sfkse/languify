@@ -1,16 +1,23 @@
 "use client";
 import { Slider } from "@/app/(protected)/components/ui/slider";
 import { Label } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { Level } from "@/app/(protected)/types/user";
 import {
   HoverCard,
   HoverCardTrigger,
   HoverCardContent,
 } from "../ui/hover-card";
 
-const LevelSlider = () => {
-  const [value, setValue] = useState([1]);
-  const steps = ["A1", "A2", "B1", "B2", "C1", "C2"];
+const steps: Level[] = ["A1", "A2", "B1", "B2", "C1", "C2"];
+
+const LevelSlider = ({
+  value,
+  onChange,
+}: {
+  value: Level;
+  onChange: (level: Level) => void;
+}) => {
+  const currentIndex = steps.indexOf(value);
 
   return (
     <div className="grid gap-2 pt-2 w-full">
@@ -20,15 +27,15 @@ const LevelSlider = () => {
             <div className="flex items-center justify-between">
               <Label>Level</Label>
               <span className="w-12 rounded-md border border-transparent px-2 py-0.5 text-right text-sm text-muted-foreground hover:border-border">
-                {steps[value[0]]}
+                {value}
               </span>
             </div>
             <Slider
               id="level"
               max={steps.length - 1}
-              defaultValue={value}
+              value={[currentIndex]}
               step={1}
-              onValueChange={setValue}
+              onValueChange={(value) => onChange(steps[value[0]])}
               className="[&_[role=slider]]:h-4 [&_[role=slider]]:w-4"
               aria-label="Level"
             />

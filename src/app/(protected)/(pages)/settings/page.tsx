@@ -8,7 +8,12 @@ import {
   PopoverTrigger,
 } from "@/app/(protected)/components/ui/popover";
 import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId } from "../../actions/users";
+import {
+  getUserByClerkId,
+  getUserSettings,
+} from "@/app/(protected)/actions/users";
+import { redirect } from "next/navigation";
+import { UserSettings } from "../../types/user";
 
 const breadcrumbs = [
   { label: "Home", href: "/", isActive: false },
@@ -17,8 +22,11 @@ const breadcrumbs = [
 
 export default async function SettingsPage() {
   const { userId } = await auth();
+  if (!userId) {
+    redirect("/sign-in");
+  }
   const user = await getUserByClerkId(userId!);
-  console.log(user);
+  const settings = (await getUserSettings(user?.id!)) as UserSettings | null;
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -38,7 +46,7 @@ export default async function SettingsPage() {
               </Popover>
             </p>
 
-            <SettingsOptions />
+            <SettingsOptions settings={settings} userId={user?.id!} />
           </div>
         </div>
       </PageContentWrapper>

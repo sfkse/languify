@@ -6,6 +6,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/app/(protected)/components/ui/breadcrumb";
+import Link from "next/link";
 
 type BreadcrumbItem = {
   label: string;
@@ -21,8 +22,8 @@ const Breadcrumbs = ({ breadcrumbs }: { breadcrumbs: BreadcrumbItem[] }) => {
           <BreadcrumbItem key={breadcrumb.href}>
             {!breadcrumb.isActive ? (
               <>
-                <BreadcrumbLink href={breadcrumb.href}>
-                  {breadcrumb.label}
+                <BreadcrumbLink href={breadcrumb.href} asChild>
+                  <Link href={breadcrumb.href}>{breadcrumb.label}</Link>
                 </BreadcrumbLink>
                 <BreadcrumbSeparator />
               </>

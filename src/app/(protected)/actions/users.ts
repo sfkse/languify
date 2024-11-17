@@ -5,9 +5,14 @@ import { auth } from "@clerk/nextjs/server";
 import { UserSettings } from "../types/user";
 import { revalidatePath } from "next/cache";
 
-export async function createUser(user: User) {
+export async function createUser(
+  user: Omit<User, "settings"> & { settings?: any }
+) {
   const newUser = await prisma.user.create({
-    data: user,
+    data: {
+      ...user,
+      settings: user.settings ? JSON.stringify(user.settings) : undefined,
+    },
   });
   return newUser;
 }

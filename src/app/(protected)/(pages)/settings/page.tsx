@@ -24,9 +24,9 @@ const breadcrumbs = [
 export default async function SettingsPage({
   searchParams,
 }: {
-  searchParams: { register: string };
+  searchParams: Promise<{ register: string }>;
 }) {
-  const { register: showRegisterPopup } = searchParams;
+  const { register: showRegisterPopup } = await searchParams;
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");

@@ -21,6 +21,8 @@ import {
   TooltipContent,
   TooltipProvider,
 } from "@/app/(protected)/components/ui/tooltip";
+import Popup from "./Popup";
+import { downloadGlossary } from "../../lib/gloassary";
 
 const Drawer = ({
   isDrawerOpen,
@@ -33,6 +35,10 @@ const Drawer = ({
 }) => {
   const [data, setData] = useState<Glossary[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [selectedGlossary, setSelectedGlossary] = useState<Glossary | null>(
+    null
+  );
 
   useEffect(() => {
     if (isDrawerOpen) {
@@ -56,6 +62,14 @@ const Drawer = ({
     }
   }, [isDrawerOpen, documentId]);
 
+  const handleSelect = (id: string) => {
+    const glossary = data.find((glossary) => glossary.id === id);
+    if (glossary) {
+      setSelectedGlossary(glossary);
+      setPopupOpen(true);
+    }
+  };
+
   const columns = [
     { key: "text", header: "Text", width: "3/4" },
     { key: "page", header: "Page", width: "1/4" },
@@ -63,51 +77,87 @@ const Drawer = ({
     { key: "actions", header: "Actions", width: "1/4" },
   ];
 
+  const getGlossaryDescription = (glossary: Glossary | null) => {
+    if (!glossary) return <></>;
+    return (
+      <div className="flex justify-between items-center">
+        <p className="flex-1">{glossary.text}</p>
+        <Button
+          variant="outline"
+          size="icon"
+          className="ml-4"
+          onClick={() => handleDownloadGlossary(glossary)}
+        >
+          <Download className="w-4 h-4" />
+        </Button>
+      </div>
+    );
+  };
+
+  const handleDownloadGlossary = (glossary: Glossary) => {
+    downloadGlossary(glossary.text, `${glossary.text.slice(0, 10)}...`);
+  };
+
+  const handleDownloadAllGlossaries = () => {
+    const blobContent = data.map((glossary) => glossary.text).join("\n");
+    downloadGlossary(blobContent, "glossary");
+  };
+
+  console.log(selectedGlossary);
   return (
-    <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
-      <TooltipProvider delayDuration={0}>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <SheetTrigger asChild>
-              <Button variant="outline" size="icon">
-                <Eye className="w-4 h-4" />
+    <>
+      <Popup
+        show={popupOpen}
+        onOpenChange={(popupOpen: boolean) => setPopupOpen(popupOpen)}
+        title="Glossary"
+        description={getGlossaryDescription(selectedGlossary)}
+      />
+      <Sheet open={isDrawerOpen} onOpenChange={setIsDrawerOpen}>
+        <TooltipProvider delayDuration={0}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <SheetTrigger asChild>
+                <Button variant="outline" size="icon">
+                  <Eye className="w-4 h-4" />
+                </Button>
+              </SheetTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="left">
+              <p>View glossary</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+        <SheetContent side="bottom" className="h-[80vh]">
+          <SheetHeader>
+            <SheetTitle className="flex justify-between items-center pr-8">
+              Glossary
+              <Button
+                variant="outline"
+                size="icon"
+                title="Download glossary"
+                onClick={handleDownloadAllGlossaries}
+              >
+                <Download className="w-4 h-4" />
               </Button>
-            </SheetTrigger>
-          </TooltipTrigger>
-          <TooltipContent side="left">
-            <p>View glossary</p>
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      <SheetContent side="bottom" className="h-[80vh]">
-        <SheetHeader>
-          <SheetTitle className="flex justify-between items-center pr-8">
-            Glossary
-            <Button
-              variant="outline"
-              size="icon"
-              title="Download glossary"
-              onClick={() => console.log("Download")}
-            >
-              <Download className="w-4 h-4" />
-            </Button>
-          </SheetTitle>
-          <SheetDescription>
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <DataTable
-                columns={columns}
-                data={data}
-                onEdit={(id) => console.log("Edit", id)}
-                onDelete={(id) => console.log("Delete", id)}
-                maxTextLength={300}
-              />
-            )}
-          </SheetDescription>
-        </SheetHeader>
-      </SheetContent>
-    </Sheet>
+            </SheetTitle>
+            <SheetDescription asChild>
+              {isLoading ? (
+                <Loading />
+              ) : (
+                <DataTable
+                  columns={columns}
+                  data={data}
+                  onEdit={(id) => console.log("Edit", id)}
+                  onDelete={(id) => console.log("Delete", id)}
+                  maxTextLength={300}
+                  onSelect={handleSelect}
+                />
+              )}
+            </SheetDescription>
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 };
 

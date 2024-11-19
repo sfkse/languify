@@ -79,7 +79,7 @@ const SettingsOptions = ({
       setIsLoading(false);
       setTimeout(() => {
         window.location.reload();
-      }, 1000);
+      }, 1500);
     }
   };
 

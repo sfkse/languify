@@ -10,9 +10,7 @@ import {
 import { Button } from "@/app/(protected)/components/ui/button";
 import { Download, Eye } from "lucide-react";
 import DataTable from "@/app/(protected)/components/common/DataTable";
-import { useEffect, useState } from "react";
-import { toast } from "@/app/(protected)/hooks/use-toast";
-import { getDocumentGlossaries } from "@/app/(protected)/actions/glossary";
+import { useState } from "react";
 import { Glossary } from "@prisma/client";
 import Loading from "@/app/(protected)/loading";
 import {
@@ -23,6 +21,14 @@ import {
 } from "@/app/(protected)/components/ui/tooltip";
 import Popup from "./Popup";
 import { downloadGlossary } from "../../lib/gloassary";
+import useFetchGlossary from "../../hooks/glossary/useFetchGlossary";
+
+const columns = [
+  { key: "text", header: "Text", width: "3/4" },
+  { key: "page", header: "Page", width: "1/4" },
+  { key: "createdAt", header: "Added", width: "1/4" },
+  { key: "actions", header: "Actions", width: "1/4" },
+];
 
 const Drawer = ({
   isDrawerOpen,
@@ -33,34 +39,12 @@ const Drawer = ({
   setIsDrawerOpen: (open: boolean) => void;
   documentId: string;
 }) => {
-  const [data, setData] = useState<Glossary[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
   const [popupOpen, setPopupOpen] = useState(false);
   const [selectedGlossary, setSelectedGlossary] = useState<Glossary | null>(
     null
   );
 
-  useEffect(() => {
-    if (isDrawerOpen) {
-      const getGlossaries = async () => {
-        try {
-          setIsLoading(true);
-          const glossaries = await getDocumentGlossaries(documentId);
-          setData(glossaries);
-        } catch (error) {
-          console.error("Error getting glossaries", error);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "There was an error getting the glossaries",
-          });
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      getGlossaries();
-    }
-  }, [isDrawerOpen, documentId]);
+  const { data, isLoading } = useFetchGlossary(isDrawerOpen, documentId);
 
   const handleSelect = (id: string) => {
     const glossary = data.find((glossary) => glossary.id === id);
@@ -69,13 +53,6 @@ const Drawer = ({
       setPopupOpen(true);
     }
   };
-
-  const columns = [
-    { key: "text", header: "Text", width: "3/4" },
-    { key: "page", header: "Page", width: "1/4" },
-    { key: "createdAt", header: "Added", width: "1/4" },
-    { key: "actions", header: "Actions", width: "1/4" },
-  ];
 
   const getGlossaryDescription = (glossary: Glossary | null) => {
     if (!glossary) return <></>;
@@ -103,7 +80,6 @@ const Drawer = ({
     downloadGlossary(blobContent, "glossary");
   };
 
-  console.log(selectedGlossary);
   return (
     <>
       <Popup

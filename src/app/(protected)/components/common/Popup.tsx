@@ -9,25 +9,40 @@ import {
   DialogFooter,
 } from "@/app/(protected)/components/ui/dialog";
 import { Button } from "../ui/button";
-import { useRouter } from "next/dist/client/components/navigation";
+import { ReactNode } from "react";
+import { redirect } from "next/navigation";
 
-const Popup = ({ show }: { show: boolean }) => {
-  const router = useRouter();
+type PopupProps = {
+  show: boolean;
+  onOpenChange?: (open: boolean) => void;
+  title: string;
+  description: ReactNode;
+  buttonText?: string;
+  path?: string;
+};
+
+const Popup = ({
+  show,
+  onOpenChange,
+  title,
+  description,
+  buttonText,
+  path,
+}: PopupProps) => {
   return (
-    <Dialog open={show}>
+    <Dialog open={show} onOpenChange={(open) => onOpenChange?.(open)}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle className="my-4">Let´s get you started</DialogTitle>
-          <DialogDescription>
-            Set your language and level to get started. This will be used for
-            all your documents by default.
-          </DialogDescription>
+          <DialogTitle className="my-4">{title}</DialogTitle>
+          <DialogDescription asChild>{description}</DialogDescription>
         </DialogHeader>
-        <DialogFooter>
-          <Button variant="outline" onClick={() => router.push("/settings")}>
-            Continue
-          </Button>
-        </DialogFooter>
+        {buttonText && (
+          <DialogFooter>
+            <Button variant="outline" onClick={() => redirect(path || "")}>
+              {buttonText}
+            </Button>
+          </DialogFooter>
+        )}
       </DialogContent>
     </Dialog>
   );

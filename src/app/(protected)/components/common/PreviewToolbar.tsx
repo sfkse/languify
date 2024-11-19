@@ -1,20 +1,12 @@
 "use client";
 import { Button } from "../ui/button";
-import { Settings } from "lucide-react";
-import { RotateCw } from "lucide-react";
-import {
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/app/(protected)/components/ui/dialog";
+import { Settings, RotateCw } from "lucide-react";
 import { Minus, Plus } from "lucide-react";
-import { Dialog } from "@/app/(protected)/components/ui/dialog";
-import SettingsOptions from "./SettingsOptions";
 import useFetchDocumentSettings from "../../hooks/document/useFetchDocumentSettings";
-import { UserSettings } from "../../types/user";
 import { useState } from "react";
+import Popup from "./Popup";
+import SettingsOptions from "./SettingsOptions";
+import { UserSettings } from "../../types/user";
 
 const PreviewToolbar = ({
   pageNumber,
@@ -41,6 +33,10 @@ const PreviewToolbar = ({
   const handleDialogClose = () => {
     // mutate(); // Refresh settings data when dialog closes
     setOpen(false);
+  };
+
+  const handleOpenChange = (open: boolean) => {
+    setOpen(open);
   };
 
   return (
@@ -90,27 +86,23 @@ const PreviewToolbar = ({
         <Button variant="outline" size="icon" onClick={rotate}>
           <RotateCw className="h-4 w-4" />
         </Button>
+        <Button variant="outline" size="icon" onClick={() => setOpen(true)}>
+          <Settings className="h-4 w-4" />
+        </Button>
       </div>
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          <Button>
-            <Settings className="h-4 w-full" /> Settings
-          </Button>
-        </DialogTrigger>
-        <DialogContent onInteractOutside={handleDialogClose}>
-          <DialogHeader>
-            <DialogTitle>Settings</DialogTitle>
-            <DialogDescription>
-              <SettingsOptions
-                settings={settings as UserSettings}
-                type="document"
-                documentId={documentId}
-                onSettingsSaved={() => handleDialogClose()}
-              />
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      </Dialog>
+      <Popup
+        show={open}
+        onOpenChange={handleOpenChange}
+        title="Document Settings"
+        description={
+          <SettingsOptions
+            settings={settings as UserSettings}
+            type="document"
+            documentId={documentId}
+            onSettingsSaved={() => handleDialogClose()}
+          />
+        }
+      />
     </div>
   );
 };

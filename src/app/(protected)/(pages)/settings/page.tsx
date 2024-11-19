@@ -39,7 +39,18 @@ export default async function SettingsPage({
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <Popup show={showRegisterPopup === "true"} />
+      <Popup
+        show={showRegisterPopup === "true"}
+        title="Let´s get you started"
+        description={
+          <p>
+            Set your language and level to get started. This will be used for
+            all your documents by default.
+          </p>
+        }
+        buttonText="Continue"
+        path="/settings"
+      />
       <PageContentWrapper>
         <div className="flex flex-col gap-8 max-w-2xl">
           <div className="flex flex-col gap-4">

@@ -48,7 +48,7 @@ const LevelSlider = ({
         >
           <p className="text-sm text-muted-foreground">
             Adjust the level of language complexity. Your text will be rephrased
-            and paraphrased to match the selected level.
+            to match the selected level.
           </p>
         </HoverCardContent>
       </HoverCard>

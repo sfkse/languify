@@ -10,6 +10,7 @@ import Loading from "../../loading";
 import { useRouter } from "next/navigation";
 import { toast } from "../../hooks/use-toast";
 import { IDocument } from "../../types/documents";
+import { logger } from "../../lib/logging/logger";
 
 const columns = [
   { key: "title", header: "Title", width: "3/4" },
@@ -33,7 +34,7 @@ const DocumentsPage = () => {
         const response = await getDocuments();
         setDocuments(response as IDocument[]);
       } catch (error) {
-        console.error("Error fetching documents", error);
+        logger.error("Error fetching documents", { error });
         toast({
           title: "Error fetching documents",
           description: "Please try again later",

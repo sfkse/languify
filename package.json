@@ -38,7 +38,9 @@
     "svix": "^1.39.0",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7",
-    "uuid": "^11.0.2"
+    "uuid": "^11.0.2",
+    "winston": "^3.17.0",
+    "winston-transport": "^4.9.0"
   },
   "devDependencies": {
     "@types/multer": "^1.4.12",

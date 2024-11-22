@@ -11,7 +11,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/app/(protected)/components/ui/sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "@radix-ui/react-avatar";
+import { Avatar, AvatarImage } from "@radix-ui/react-avatar";
 
 export function VersionSwitcher({
   title,
@@ -41,7 +41,6 @@ export function VersionSwitcher({
                 {type === "menu" && (
                   <Avatar className="h-8 w-8 rounded-lg">
                     <AvatarImage src="https://github.com/shadcn.png" />
-                    <AvatarFallback>CN</AvatarFallback>
                   </Avatar>
                 )}
               </div>

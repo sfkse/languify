@@ -1,2 +1,4 @@
 - Fix webhook endpoint
 - Fetch auth user and send in the create document endpoint
+- Handle env naming and which one to use where
+- Add swedish prompt guideline when necessary

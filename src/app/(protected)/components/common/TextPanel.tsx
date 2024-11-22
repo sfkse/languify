@@ -13,6 +13,9 @@ import useHandleClickOutsidePanel from "../../hooks/useHandleClickOutsidePanel";
 import useAddToGlossary from "../../hooks/glossary/useAddToGlossary";
 import useRephraseText from "../../hooks/document/useRephraseText";
 import useHandleClickOutsideDrawer from "../../hooks/useHandleClickOutsideDrawer";
+import { toast } from "../../hooks/use-toast";
+import { ToastAction } from "../ui/toast";
+import { useRouter } from "next/navigation";
 
 const TextPanel = ({
   selectedText,
@@ -34,6 +37,7 @@ const TextPanel = ({
   level?: string;
 }) => {
   const panelRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
   useHandleClickOutsidePanel(panelRef, setIsPanelOpen, setSelectedText);
   useHandleClickOutsideDrawer();
 
@@ -94,7 +98,21 @@ const TextPanel = ({
                   variant="outline"
                   className="w-full"
                   onClick={() =>
-                    language && level && rephrase(selectedText, language, level)
+                    language && level
+                      ? rephrase(selectedText, language, level)
+                      : toast({
+                          title: "Error rephrasing text",
+                          description:
+                            "Please select a language and level from",
+                          action: (
+                            <ToastAction
+                              altText="Go to settings"
+                              onClick={() => router.push("/settings")}
+                            >
+                              Go to settings
+                            </ToastAction>
+                          ),
+                        })
                   }
                   disabled={isButtonDisabled}
                 >

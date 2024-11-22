@@ -20,6 +20,7 @@ import { updateUserSettings } from "@/app/(protected)/actions/users";
 import { SUPPORTED_LANGUAGES } from "@/app/(protected)/lib/prompt";
 import { updateDocumentSettings } from "@/app/(protected)/actions/documents";
 import { IDocumentSettings } from "@/app/(protected)/types/documents";
+import Link from "next/link";
 
 type SettingsType = "user" | "document";
 type SettingsProps = {
@@ -84,38 +85,49 @@ const SettingsOptions = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <LevelSlider
-        value={settings.level as Level}
-        onChange={(level) => setSettings({ ...settings, level })}
-      />
-      <div className="flex flex-row justify-between items-center gap-10 mt-10">
-        <span className="w-60">Source language</span>
-        <Select
-          value={settings.language.sourceLanguage}
-          onValueChange={(value) =>
-            setSettings({
-              ...settings,
-              language: {
-                ...settings.language,
-                sourceLanguage: value as SourceLanguage,
-              },
-            })
-          }
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select a language" />
-          </SelectTrigger>
-          <SelectContent>
-            {Object.entries(SUPPORTED_LANGUAGES).map(([key, value]) => (
-              <SelectItem key={key} value={key}>
-                {value}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      {/* <div className="flex flex-row justify-between items-center gap-10 mt-5">
+    <>
+      {type === "document" && (
+        <p className="text-sm text-muted-foreground">
+          If you want to apply these settings to all your documents, please go
+          to{" "}
+          <Link className="underline" href="/settings">
+            settings
+          </Link>
+          .
+        </p>
+      )}
+      <form onSubmit={handleSubmit}>
+        <LevelSlider
+          value={settings.level as Level}
+          onChange={(level) => setSettings({ ...settings, level })}
+        />
+        <div className="flex flex-row justify-between items-center gap-10 mt-10">
+          <span className="w-60">Source language</span>
+          <Select
+            value={settings.language.sourceLanguage}
+            onValueChange={(value) =>
+              setSettings({
+                ...settings,
+                language: {
+                  ...settings.language,
+                  sourceLanguage: value as SourceLanguage,
+                },
+              })
+            }
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a language" />
+            </SelectTrigger>
+            <SelectContent>
+              {Object.entries(SUPPORTED_LANGUAGES).map(([key, value]) => (
+                <SelectItem key={key} value={key}>
+                  {value}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        {/* <div className="flex flex-row justify-between items-center gap-10 mt-5">
         <span className="w-40">Target language</span>
         <Select
           value={settings.language.targetLanguage}
@@ -139,10 +151,11 @@ const SettingsOptions = ({
           </SelectContent>
         </Select>
       </div> */}
-      <Button type="submit" className="w-full mt-10" disabled={isLoading}>
-        {isLoading ? "Saving..." : "Save"}
-      </Button>
-    </form>
+        <Button type="submit" className="w-full mt-10" disabled={isLoading}>
+          {isLoading ? "Saving..." : "Save"}
+        </Button>
+      </form>
+    </>
   );
 };
 

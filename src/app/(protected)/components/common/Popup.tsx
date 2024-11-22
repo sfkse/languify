@@ -29,7 +29,6 @@ const Popup = ({
   buttonText,
   path,
 }: PopupProps) => {
-  console.log("description", description);
   return (
     <Dialog open={show} onOpenChange={(open) => onOpenChange?.(open)}>
       <DialogContent>

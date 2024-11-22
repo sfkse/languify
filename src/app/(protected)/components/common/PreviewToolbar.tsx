@@ -86,7 +86,7 @@ const PreviewToolbar = ({
         <Button variant="outline" size="icon" onClick={rotate}>
           <RotateCw className="h-4 w-4" />
         </Button>
-        <Button variant="outline" size="icon" onClick={() => setOpen(true)}>
+        <Button size="icon" onClick={() => setOpen(true)}>
           <Settings className="h-4 w-4" />
         </Button>
       </div>

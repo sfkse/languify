@@ -145,7 +145,7 @@ const languageSpecifics: Record<string, LanguageSpecific> = {
 
 type LevelGuideline = {
   vocabulary: string;
-  sentenceLength: string;
+  // sentenceLength: string;
   connectors: string;
   complexity: string;
   grammarFocus?: string;
@@ -158,38 +158,38 @@ const getLevelGuidelines = (
   const baseGuidelines: Record<string, LevelGuideline> = {
     A1: {
       vocabulary: "basic vocabulary, high-frequency words only",
-      sentenceLength: "very short (5-8 words)",
+      // sentenceLength: "very short (5-8 words)",
       connectors: "and, but, because",
       complexity: "extremely simple structures",
     },
     A2: {
       vocabulary: "basic vocabulary with common expressions",
-      sentenceLength: "short (8-10 words)",
+      // sentenceLength: "short (8-10 words)",
       connectors: "and, but, because, so, then",
       complexity: "simple structures with basic combinations",
     },
     B1: {
       vocabulary: "intermediate vocabulary, common idioms",
-      sentenceLength: "medium (10-15 words)",
+      // sentenceLength: "medium (10-15 words)",
       connectors: "however, therefore, although",
       complexity: "moderate complexity allowed",
     },
     B2: {
       vocabulary: "advanced vocabulary, idioms",
-      sentenceLength: "longer (15-20 words)",
+      // sentenceLength: "longer (15-20 words)",
       connectors: "nevertheless, furthermore, meanwhile",
       complexity: "complex structures allowed",
     },
     C1: {
       vocabulary: "sophisticated vocabulary, rare words, colloquialisms",
-      sentenceLength: "unrestricted",
+      // sentenceLength: "unrestricted",
       connectors: "all advanced connectors",
       complexity: "highly complex structures",
     },
     C2: {
       vocabulary:
         "mastery level vocabulary, including technical, academic, and nuanced expressions",
-      sentenceLength: "unrestricted, with complex nested structures",
+      // sentenceLength: "unrestricted, with complex nested structures",
       connectors: "all connectors with nuanced usage",
       complexity: "native-like complexity, including subtle distinctions",
     },
@@ -205,16 +205,17 @@ const getLevelGuidelines = (
   };
 };
 
-const getSwedishSpecificGuidelines = (level: string) => {
-  const features =
-    languageSpecifics?.swedish?.specificFeatures?.[
-      level as keyof typeof languageSpecifics.swedish.specificFeatures
-    ];
-  return {
-    grammarPoints: features?.grammar?.join(", "),
-    vocabularyFocus: features?.vocabulary?.join(", "),
-  };
-};
+// TODO: Add Swedish specific guidelines later when necessary
+// const getSwedishSpecificGuidelines = (level: string) => {
+//   const features =
+//     languageSpecifics?.swedish?.specificFeatures?.[
+//       level as keyof typeof languageSpecifics.swedish.specificFeatures
+//     ];
+//   return {
+//     grammarPoints: features?.grammar?.join(", "),
+//     vocabularyFocus: features?.vocabulary?.join(", "),
+//   };
+// };
 
 export const createPrompt = (
   text: string,
@@ -226,49 +227,31 @@ export const createPrompt = (
     languageSpecifics[targetLanguage as keyof typeof languageSpecifics];
 
   // Special handling for Swedish
-  const swedishSpecifics =
-    targetLanguage === "swedish" ? getSwedishSpecificGuidelines(level) : null;
+  // const swedishSpecifics =
+  //   targetLanguage === "swedish" ? getSwedishSpecificGuidelines(level) : null;
 
   return [
     {
       role: "system",
-      content: `You are an expert ${langSpecifics.name} language educator specializing in adapting texts for different proficiency levels according to CEFR standards. ${langSpecifics.culturalNotes}. Only respond with the rephrased text.`,
+      content: `You are an expert ${langSpecifics.name} language educator specializing in adapting texts for different proficiency levels according to CEFR standards. ${langSpecifics.culturalNotes}. Only respond with the rephrased text. If you are unable to rephrase the text, please respond with the original text. Text length should be similar to the original text. Use provided guidelines for complexity when appropriate.`,
     },
     {
       role: "user",
       content: [
         {
           type: "text",
-          text: `Rephrase the following text in ${
-            langSpecifics.name
-          } for ${level} level learners:
+          text: `Rephrase the following text in ${langSpecifics.name} for ${level} level learners:
               Original text: ${text}
   
               Guidelines for ${level} level ${langSpecifics.name}:
               - Use ${guidelines.vocabulary}
-              - Keep sentences ${guidelines.sentenceLength}
               - Grammar focus: ${guidelines.grammarFocus}
               - Use these connectors: ${guidelines.connectors}
               - Complexity level: ${guidelines.complexity}
-              
-              ${
-                targetLanguage === "swedish"
-                  ? `
-              Swedish-specific requirements:
-              - Grammar points to include: ${swedishSpecifics?.grammarPoints}
-              - Vocabulary focus areas: ${swedishSpecifics?.vocabularyFocus}
-              - Follow Swedish word order rules (V2)
-              - Use appropriate definite/indefinite forms
-              - Consider en/ett gender system
-              `
-                  : ""
-              }
   
               Language-specific requirements:
               - Use appropriate ${langSpecifics.name} syntax and word order
-              - Consider ${
-                langSpecifics.name
-              }-specific expressions and cultural context
+              - Consider ${langSpecifics.name}-specific expressions and cultural context
               - Maintain natural flow in ${langSpecifics.name}
               
               Additional requirements:
@@ -277,9 +260,7 @@ export const createPrompt = (
               - Keep the tone appropriate for the level
               - Avoid vocabulary or structures above ${level} level
               
-              Please provide the rephrased version in ${
-                langSpecifics.name
-              } suitable for ${level} level learners.`,
+              Please provide the rephrased version in ${langSpecifics.name} suitable for ${level} level learners.`,
         },
       ],
     },

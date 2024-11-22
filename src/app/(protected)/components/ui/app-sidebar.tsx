@@ -14,7 +14,15 @@ import { VersionSwitcher } from "@/app/(protected)/components/ui/version-switche
 import { useClerk } from "@clerk/nextjs";
 
 export function AppSidebar() {
-  const { signOut } = useClerk();
+  const { signOut, user } = useClerk();
+  const profileTitle =
+    user && user.firstName && user.lastName
+      ? user.firstName + " " + user.lastName
+      : "";
+  const profileSubtitle =
+    user && user.emailAddresses && user.emailAddresses[0]
+      ? user.emailAddresses[0].emailAddress
+      : "";
   // Menu items.
   const items = [
     {
@@ -82,8 +90,8 @@ export function AppSidebar() {
           </SidebarMenuItem>
         </SidebarMenu> */}
         <VersionSwitcher
-          title="Sefa Köse"
-          subtitle="sfkse5591@gmail.com"
+          title={profileTitle}
+          subtitle={profileSubtitle}
           type="menu"
           menuItems={[
             {

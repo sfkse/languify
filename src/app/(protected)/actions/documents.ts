@@ -5,7 +5,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getUserByClerkId, getUserSettings } from "./users";
 import { IDocumentSettings } from "../types/documents";
 import { revalidatePath } from "next/cache";
-import { logger } from "../lib/logging/logger";
+import { logger } from "../lib/logging/winston";
 
 export async function createDocument(title: string, url: string) {
   const { userId } = await auth();
@@ -47,7 +47,7 @@ export async function getDocument(id: string) {
 export async function getDocuments() {
   const { userId } = await auth();
   if (!userId) {
-    logger.error("Unauthorized");
+    logger.error(`Unauthorized for userId: ${userId}`);
     throw new Error("Unauthorized");
   }
   const user = await getUserByClerkId(userId);

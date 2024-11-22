@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 import { IDocumentSettings } from "@/app/(protected)/types/documents";
 import { getDocumentSettings } from "@/app/(protected)/actions/documents";
-import { logger } from "../../lib/logging/logger";
+// import { logger } from "../../lib/logging/winston";
 const useFetchDocumentSettings = (documentId: string) => {
   const [settings, setSettings] = useState<IDocumentSettings | null>(null);
   const [error, setError] = useState<Error | null>(null);
@@ -12,7 +12,7 @@ const useFetchDocumentSettings = (documentId: string) => {
       const settings = await getDocumentSettings(documentId);
       setSettings(settings);
     } catch (error) {
-      logger.error("Error fetching document settings", { error });
+      // logger.error("Error fetching document settings", { error });
       setError(error as Error);
     } finally {
       setIsLoading(false);

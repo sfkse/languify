@@ -1,8 +1,18 @@
 import winston from "winston";
 
+const logFormat = winston.format.combine(
+  winston.format.timestamp(),
+  winston.format.printf((info) => {
+    return JSON.stringify({
+      timestamp: info.timestamp,
+      level: info.level,
+      message: info.message,
+    });
+  })
+);
 export const logger = winston.createLogger({
   level: "info",
-  format: winston.format.json(),
+  format: logFormat,
   defaultMeta: { service: "languify-app" },
   transports: [
     //

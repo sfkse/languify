@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { UserSettings } from "../types/user";
 import { revalidatePath } from "next/cache";
 import { UserWithoutSettings } from "../types/user";
+import { logger } from "../lib/logging/winston";
 
 export async function createUser(user: UserWithoutSettings) {
   const newUser = await prisma.user.create({
@@ -22,14 +23,7 @@ export async function getUserByClerkId(clerkId: string) {
 }
 
 export async function updateUserSettings(settings: UserSettings) {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("User not authenticated");
-  }
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    throw new Error("User not found");
-  }
+  const user = await getAuthUser();
   await prisma.user.update({
     where: { id: user.id },
     data: { settings: JSON.stringify(settings) },
@@ -37,10 +31,27 @@ export async function updateUserSettings(settings: UserSettings) {
   revalidatePath("/settings");
 }
 
-export async function getUserSettings(id: string) {
-  const user = await prisma.user.findUnique({
-    where: { id },
+export async function getUserSettings() {
+  const user = await getAuthUser();
+  const userSettings = await prisma.user.findUnique({
+    where: { id: user.id },
   });
-  return user?.settings ? JSON.parse(user.settings as string) : null;
+  return userSettings?.settings
+    ? JSON.parse(userSettings.settings as string)
+    : null;
 }
+
+export const getAuthUser = async () => {
+  const { userId } = await auth();
+  if (!userId) {
+    logger.error(`Unauthorized for userId: ${userId}`);
+    throw new Error("Unauthorized");
+  }
+  const user = await getUserByClerkId(userId);
+  if (!user) {
+    logger.error(`User not found for userId: ${userId}`);
+    throw new Error("User not found");
+  }
+  return user;
+};
 

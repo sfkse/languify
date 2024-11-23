@@ -1,21 +1,12 @@
 "use server";
 import { prisma } from "../lib/prisma";
 import { v4 as uuidv4 } from "uuid";
-import { auth } from "@clerk/nextjs/server";
-import { getUserByClerkId, getUserSettings } from "./users";
+import { getAuthUser, getUserSettings } from "./users";
 import { IDocumentSettings } from "../types/documents";
 import { revalidatePath } from "next/cache";
-import { logger } from "../lib/logging/winston";
 
 export async function createDocument(title: string, url: string) {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    throw new Error("User not found");
-  }
+  const user = await getAuthUser();
   const response = await prisma.document.create({
     data: {
       id: uuidv4(),
@@ -29,9 +20,11 @@ export async function createDocument(title: string, url: string) {
 }
 
 export async function getDocument(id: string) {
+  const user = await getAuthUser();
   const document = await prisma.document.findUnique({
     where: {
       id,
+      userId: user.id,
     },
   });
 
@@ -45,17 +38,7 @@ export async function getDocument(id: string) {
 }
 
 export async function getDocuments() {
-  const { userId } = await auth();
-  if (!userId) {
-    logger.error(`Unauthorized for userId: ${userId}`);
-    throw new Error("Unauthorized");
-  }
-  const user = await getUserByClerkId(userId);
-
-  if (!user) {
-    logger.error(`User not found for userId: ${userId}`);
-    throw new Error("User not found");
-  }
+  const user = await getAuthUser();
   let documents = await prisma.document.findMany({
     where: {
       userId: user.id,
@@ -80,27 +63,21 @@ export async function getDocuments() {
 }
 
 export async function getDocumentSettings(documentId: string) {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    throw new Error("User not found");
-  }
   // Check if document settings exist, if not return user settings
   let settings = await getSingleDocumentSettings(documentId);
   if (!settings) {
-    settings = await getUserSettings(user.id);
+    settings = await getUserSettings();
   }
   revalidatePath(`/documents/${documentId}`);
   return settings;
 }
 
 async function getSingleDocumentSettings(id: string) {
+  const user = await getAuthUser();
   const document = await prisma.document.findUnique({
     where: {
       id,
+      userId: user.id,
     },
   });
   return document?.settings ? JSON.parse(document.settings as string) : null;
@@ -110,17 +87,11 @@ export async function updateDocumentSettings(
   settings: IDocumentSettings,
   documentId: string
 ) {
-  const { userId } = await auth();
-  if (!userId) {
-    throw new Error("Unauthorized");
-  }
-  const user = await getUserByClerkId(userId);
-  if (!user) {
-    throw new Error("User not found");
-  }
+  const user = await getAuthUser();
   await prisma.document.update({
     where: {
       id: documentId,
+      userId: user.id,
     },
     data: { settings: JSON.stringify(settings) },
   });

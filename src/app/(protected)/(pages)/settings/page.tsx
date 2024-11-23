@@ -7,14 +7,13 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/app/(protected)/components/ui/popover";
-import { auth } from "@clerk/nextjs/server";
-import {
-  getUserByClerkId,
-  getUserSettings,
-} from "@/app/(protected)/actions/users";
-import { redirect } from "next/navigation";
+import { getUserSettings } from "@/app/(protected)/actions/users";
 import { UserSettings } from "../../types/user";
 import Popup from "../../components/common/Popup";
+
+type SettingsPageProps = {
+  searchParams: Promise<{ register: string }>;
+};
 
 const breadcrumbs = [
   { label: "Home", href: "/", isActive: false },
@@ -23,19 +22,10 @@ const breadcrumbs = [
 
 export default async function SettingsPage({
   searchParams,
-}: {
-  searchParams: Promise<{ register: string }>;
-}) {
+}: SettingsPageProps) {
   const { register: showRegisterPopup } = await searchParams;
-  const { userId } = await auth();
-  if (!userId) {
-    redirect("/sign-in");
-  }
-  const user = await getUserByClerkId(userId!);
-  if (!user) {
-    redirect("/sign-in");
-  }
-  const settings = (await getUserSettings(user.id)) as UserSettings | null;
+  const settings = (await getUserSettings()) as UserSettings | null;
+
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
